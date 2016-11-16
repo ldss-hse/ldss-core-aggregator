@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+mainClassName = 'dss.lingvo.Main'
+
+// tag:repositories[]
+repositories {
+    jcenter()
+}
+// end:repositories[]
+
+// tag::jar[]
+jar {
+    baseName = 'lingvo-dss'
+    version =  '0.1.0'
+}
+// end::jar[]
+
+// tag:dependencies[]
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    testCompile "junit:junit:4.12"
+}
+// end:dependencies[]
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'dss.lingvo.Main'
+    }
+}
