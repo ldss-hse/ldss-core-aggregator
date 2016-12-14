@@ -22,4 +22,9 @@ public class TTHFLTS {
         return obj.getClass()!=TTHFLTS.class &&
                 Arrays.equals(this.terms, ((TTHFLTS) obj).getTerms());
     }
+
+    @Override
+    public String toString(){
+        return Arrays.toString(this.terms);
+    }
 }

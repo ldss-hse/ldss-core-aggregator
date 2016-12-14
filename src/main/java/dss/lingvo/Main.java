@@ -1,11 +1,11 @@
 package dss.lingvo;
 
-import dss.lingvo.hflts.HFLTSCoordinator;
+import dss.lingvo.hflts.TTHFLTSCoordinator;
 
 public class Main {
 
     public static void main(String[] args) {
-        HFLTSCoordinator simpleHFLTSCoordinator = new HFLTSCoordinator();
+        TTHFLTSCoordinator simpleHFLTSCoordinator = new TTHFLTSCoordinator();
         simpleHFLTSCoordinator.go();
     }
 }
