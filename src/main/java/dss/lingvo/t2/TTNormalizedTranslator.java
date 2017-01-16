@@ -5,7 +5,7 @@ import dss.lingvo.hflts.TTHFLTSScale;
 import java.util.Map;
 
 public class TTNormalizedTranslator {
-    public static TTNormalizedTranslator myInstance = new TTNormalizedTranslator();
+    private static TTNormalizedTranslator myInstance = new TTNormalizedTranslator();
     private static Map<Integer, TTHFLTSScale> scaleStore;
 
     public static TTNormalizedTranslator getInstance() {

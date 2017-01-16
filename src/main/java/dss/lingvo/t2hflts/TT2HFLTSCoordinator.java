@@ -6,7 +6,6 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.utils.TTUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -23,7 +22,7 @@ public class TT2HFLTSCoordinator {
         String[] scale5 = {"0", "1", "2", "3", "4"};
         TTHFLTSScale hScale5 = new TTHFLTSScale(scale5);
 
-        HashMap<Integer, TTHFLTSScale> scaleStore = new HashMap<Integer, TTHFLTSScale>();
+        HashMap<Integer, TTHFLTSScale> scaleStore = new HashMap<>();
         scaleStore.put(scale9.length, hScale9);
         scaleStore.put(scale3.length, hScale3);
         scaleStore.put(scale5.length, hScale5);
@@ -52,7 +51,7 @@ public class TT2HFLTSCoordinator {
         alt2.add(new TTTuple("2", 3, 0, 2));
         alt2.add(new TTTuple("5", 9, 0, 5));
 
-        ArrayList<TTTuple> alt3 = new ArrayList<TTTuple>();
+        ArrayList<TTTuple> alt3 = new ArrayList<>();
         alt3.add(new TTTuple("3", 9, 0, 3));
         alt3.add(new TTTuple("3", 5, 0, 3));
         alt3.add(new TTTuple("2", 3, 0, 2));
