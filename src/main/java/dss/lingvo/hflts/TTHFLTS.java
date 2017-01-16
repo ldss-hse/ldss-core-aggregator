@@ -14,7 +14,7 @@ public class TTHFLTS {
     }
 
     @Override
-    public boolean equals(Object obj) throws NullPointerException {
+    public boolean equals(Object obj){
         boolean isEqual = false;
         if (obj != null) {
             isEqual = obj.getClass() != TTHFLTS.class &&
