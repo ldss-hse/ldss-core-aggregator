@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
-
+apply plugin: "jacoco"
 
 mainClassName = 'dss.lingvo.Main'
 
@@ -40,7 +40,16 @@ jar {
 
 sonarqube {
     properties {
-        property "sonar.projectName", "Java Gradle-based project analyzed on SonarQube.com using Travis"
+        property "sonar.projectName", "Linguistic Decision Support System"
         property "sonar.projectKey", "dss.lingvo"
+    }
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
     }
 }
