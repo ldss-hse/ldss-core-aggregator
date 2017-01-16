@@ -41,11 +41,11 @@ public class TTHFLTSCalcPrefOperator {
         for (int i = 0; i < prefRelMatrix.length; ++i) {
             ArrayList<Float> options = new ArrayList<Float>();
 
-            for (int j = 0; j < prefRelMatrix.length; ++j){
+            for (int j = 0; j < prefRelMatrix.length; ++j) {
                 if (i == j) {
                     continue;
                 }
-                options.add(1-prefRelMatrix[j][i]);
+                options.add(1 - prefRelMatrix[j][i]);
             }
             nonDominanceVector[i] = Collections.min(options);
         }
@@ -55,15 +55,15 @@ public class TTHFLTSCalcPrefOperator {
     public int[] getNonDominatedAlternatives(float[] nonDominanceVector) {
         ArrayList<Float> options = new ArrayList<Float>();
         ArrayList<Integer> resList = new ArrayList<Integer>();
-        for (int i=0; i < nonDominanceVector.length; ++i){
+        for (int i = 0; i < nonDominanceVector.length; ++i) {
             options.add(nonDominanceVector[i]);
         }
         int minIndex = 0;
-        while ((minIndex = options.indexOf(Collections.min(options))) > 0 && !resList.contains(minIndex)){
+        while ((minIndex = options.indexOf(Collections.min(options))) > 0 && !resList.contains(minIndex)) {
             resList.add(minIndex);
         }
         int[] res = new int[resList.size()];
-        for (int i = 0; i < resList.size(); ++i){
+        for (int i = 0; i < resList.size(); ++i) {
             res[i] = resList.get(i);
         }
         return res;

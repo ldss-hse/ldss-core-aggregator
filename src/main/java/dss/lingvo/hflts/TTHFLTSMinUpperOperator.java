@@ -1,7 +1,5 @@
 package dss.lingvo.hflts;
 
-import java.util.ArrayList;
-
 public class TTHFLTSMinUpperOperator {
     public String calculate(TTHFLTSAlternativeEstimation altEstimates, TTHFLTSScale scale) {
         String minMax = "p";

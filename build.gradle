@@ -53,3 +53,7 @@ jacocoTestReport {
         html.destination "${buildDir}/reports/coverage"
     }
 }
+
+task testCov
+    testCov.dependsOn test
+    testCov.dependsOn jacocoTestReport

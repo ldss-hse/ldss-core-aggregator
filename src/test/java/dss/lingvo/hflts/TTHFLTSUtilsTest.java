@@ -10,6 +10,6 @@ public class TTHFLTSUtilsTest {
         TTHFLTS referenceHFLTS = new TTHFLTS(referenceSet);
         String [] desiredSet = {"good", "best"};
         TTHFLTS desiredHFLTS = new TTHFLTS(desiredSet);
-        assertEquals(desiredHFLTS.getTerms(), TTHFLTSUtils.getSubset(referenceHFLTS, 1,3).getTerms());
+        assertArrayEquals(desiredHFLTS.getTerms(), TTHFLTSUtils.getSubset(referenceHFLTS, 1,3).getTerms());
     }
 }

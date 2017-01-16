@@ -1,11 +1,9 @@
 package dss.lingvo.hflts;
 
-import java.util.ArrayList;
-
 public class TTHFLTSConcatBoundsOperator {
     public String[] calculate(String top, String bottom,
                               TTHFLTSScale scale) {
-            String [] res = null;
+            String [] res;
             if (top.equals(bottom)) {
                 res = new String[]{top};
             }else if(scale.termPosition(top) < scale.termPosition(bottom)) {
