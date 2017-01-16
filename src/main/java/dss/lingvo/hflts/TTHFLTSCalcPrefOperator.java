@@ -2,9 +2,10 @@ package dss.lingvo.hflts;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class TTHFLTSCalcPrefOperator {
-    public float[][] calculate(ArrayList<String[]> bounds, TTHFLTSScale scale) {
+    public float[][] calculate(List<String[]> bounds, TTHFLTSScale scale) {
         float[][] prefMatrix = new float[bounds.size()][bounds.size()];
         for (int i = 0; i < bounds.size(); i++) {
             for (int j = 0; j < bounds.size(); j++) {
@@ -39,7 +40,7 @@ public class TTHFLTSCalcPrefOperator {
     public float[] getNonDominanceVector(float[][] prefRelMatrix) {
         float[] nonDominanceVector = new float[prefRelMatrix.length];
         for (int i = 0; i < prefRelMatrix.length; ++i) {
-            ArrayList<Float> options = new ArrayList<Float>();
+            ArrayList<Float> options = new ArrayList<>();
 
             for (int j = 0; j < prefRelMatrix.length; ++j) {
                 if (i == j) {
@@ -53,12 +54,12 @@ public class TTHFLTSCalcPrefOperator {
     }
 
     public int[] getNonDominatedAlternatives(float[] nonDominanceVector) {
-        ArrayList<Float> options = new ArrayList<Float>();
-        ArrayList<Integer> resList = new ArrayList<Integer>();
+        ArrayList<Float> options = new ArrayList<>();
+        ArrayList<Integer> resList = new ArrayList<>();
         for (int i = 0; i < nonDominanceVector.length; ++i) {
             options.add(nonDominanceVector[i]);
         }
-        int minIndex = 0;
+        int minIndex;
         while ((minIndex = options.indexOf(Collections.min(options))) > 0 && !resList.contains(minIndex)) {
             resList.add(minIndex);
         }

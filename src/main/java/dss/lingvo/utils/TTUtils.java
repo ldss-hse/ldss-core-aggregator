@@ -1,14 +1,11 @@
 package dss.lingvo.utils;
 
 public class TTUtils {
-    public static TTUtils myInstance = null;
+    public static TTUtils myInstance = new TTUtils();
 
     private TTUtils(){}
 
     public static TTUtils getInstance(){
-        if (myInstance == null){
-           myInstance = new TTUtils();
-        }
         return myInstance;
     }
 

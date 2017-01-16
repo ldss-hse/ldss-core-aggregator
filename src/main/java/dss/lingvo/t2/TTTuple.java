@@ -1,7 +1,5 @@
 package dss.lingvo.t2;
 
-import dss.lingvo.hflts.TTHFLTSScale;
-
 public class TTTuple {
     private final String myLabel;
     private float myTranslation;

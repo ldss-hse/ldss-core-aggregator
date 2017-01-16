@@ -9,7 +9,7 @@ public class Main {
 //        TTHFLTSCoordinator simpleHFLTSCoordinator = new TTHFLTSCoordinator();
 //        simpleHFLTSCoordinator.go();
 
-//        TT2HFLTSCoordinator complextT2HFLTSCoordinator = new TT2HFLTSCoordinator();
-//        complextT2HFLTSCoordinator.go();
+        TT2HFLTSCoordinator complextT2HFLTSCoordinator = new TT2HFLTSCoordinator();
+        complextT2HFLTSCoordinator.go();
     }
 }

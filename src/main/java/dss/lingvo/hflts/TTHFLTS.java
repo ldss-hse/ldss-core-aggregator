@@ -19,12 +19,25 @@ public class TTHFLTS {
 
     @Override
     public boolean equals(Object obj){
-        return obj.getClass()!=TTHFLTS.class &&
-                Arrays.equals(this.terms, ((TTHFLTS) obj).getTerms());
+        boolean isEqual = false;
+        try{
+            isEqual = obj.getClass()!=TTHFLTS.class &&
+                    Arrays.equals(this.terms, ((TTHFLTS) obj).getTerms());
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return isEqual;
     }
 
     @Override
     public String toString(){
         return Arrays.toString(this.terms);
+    }
+
+    @Override
+    public int hashCode(){
+        int result = 17;
+        result = 31 * result + Arrays.hashCode(terms);
+        return result;
     }
 }

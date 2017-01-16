@@ -13,10 +13,10 @@ public class TTHFLTSAlternativeEstimation {
 
     @Override
     public String toString() {
-        String finalString = "";
+        StringBuilder bld = new StringBuilder();
         for (TTHFLTS i : myEstimates) {
-            finalString += i.toString();
+            bld.append(i.toString());
         }
-        return finalString;
+        return bld.toString();
     }
 }

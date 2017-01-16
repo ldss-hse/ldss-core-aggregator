@@ -31,7 +31,6 @@ public class TT2HFLTSCoordinator {
         final TTNormalizedTranslator myTranslator = TTNormalizedTranslator.getInstance();
         TTNormalizedTranslator.setScaleStore(scaleStore);
 
-        int numberAlts = 4;
         int numberExp = 4;
         float[] weights = new float[numberExp];
         for (int i = 0; i < numberExp; i++) {
@@ -39,15 +38,15 @@ public class TT2HFLTSCoordinator {
         }
 
         log.info("Step 1. Gather feedback and parse to T2HFLTS...");
-        ArrayList<ArrayList<TTTuple>> estimates = new ArrayList<ArrayList<TTTuple>>();
+        ArrayList<ArrayList<TTTuple>> estimates = new ArrayList<>();
 
-        ArrayList<TTTuple> alt1 = new ArrayList<TTTuple>();
+        ArrayList<TTTuple> alt1 = new ArrayList<>();
         alt1.add(new TTTuple("4", 9, 0, 4));
         alt1.add(new TTTuple("3", 5, 0, 3));
         alt1.add(new TTTuple("1", 3, 0, 1));
         alt1.add(new TTTuple("4", 9, 0, 4));
 
-        ArrayList<TTTuple> alt2 = new ArrayList<TTTuple>();
+        ArrayList<TTTuple> alt2 = new ArrayList<>();
         alt2.add(new TTTuple("6", 9, 0, 6));
         alt2.add(new TTTuple("4", 5, 0, 4));
         alt2.add(new TTTuple("2", 3, 0, 2));
@@ -60,7 +59,7 @@ public class TT2HFLTSCoordinator {
         alt3.add(new TTTuple("3", 9, 0, 3));
 
 
-        ArrayList<TTTuple> alt4 = new ArrayList<TTTuple>();
+        ArrayList<TTTuple> alt4 = new ArrayList<>();
         alt4.add(new TTTuple("5", 9, 0, 5));
         alt4.add(new TTTuple("3", 5, 0, 3));
         alt4.add(new TTTuple("1", 3, 0, 1));
@@ -74,7 +73,7 @@ public class TT2HFLTSCoordinator {
 
         log.info("Step 2. Aggregate alternative values...");
         TT2HFLTSMTWAOperator mtwaOperator = new TT2HFLTSMTWAOperator();
-        ArrayList<TTTuple> res = new ArrayList<TTTuple>();
+        ArrayList<TTTuple> res = new ArrayList<>();
         for (int i = 0; i < estimates.size(); i++) {
             res.add(mtwaOperator.calculate(estimates.get(i), weights, 9));
         }
@@ -85,7 +84,7 @@ public class TT2HFLTSCoordinator {
         Collections.sort(res, Collections.reverseOrder((tt1, tt2) -> {
             float tt1Translation = myTranslator.getTranslationFrom2Tuple(tt1);
             float tt2Translation = myTranslator.getTranslationFrom2Tuple(tt2);
-            return tt1Translation < tt2Translation ? -1 : tt1Translation == tt2Translation ? 0 : 1;
+            return tt1Translation < tt2Translation ? -1 : Math.abs(tt2Translation - tt1Translation) < 0.0001f? 0 : 1;
         }));
         log.info(res);
 
