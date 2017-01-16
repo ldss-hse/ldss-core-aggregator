@@ -6,6 +6,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
 
+
 mainClassName = 'dss.lingvo.Main'
 
 // tag:repositories[]
