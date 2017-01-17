@@ -1,5 +1,7 @@
 package dss.lingvo.t2;
 
+import java.util.Arrays;
+
 public class TTTuple {
     private final String myLabel;
     private float myTranslation;
@@ -37,5 +39,16 @@ public class TTTuple {
 
     public int getScaleSize() {
         return scaleSize;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        boolean isEqual = false;
+        final TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
+        if (obj != null) {
+            isEqual = obj.getClass() == TTTuple.class &&
+                    translator.getTranslationFrom2Tuple(this) == translator.getTranslationFrom2Tuple((TTTuple) obj);
+        }
+        return isEqual;
     }
 }
