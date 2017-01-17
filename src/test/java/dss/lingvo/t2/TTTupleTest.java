@@ -36,6 +36,24 @@ public class TTTupleTest {
     }
 
     @Test
+    public void testEquals3() throws Exception {
+        TTTuple tmp = new TTTuple("5", 9, -0.5f, 5);
+
+        boolean res = tmp.equals(null);
+
+        assertEquals(false, res);
+    }
+
+    @Test
+    public void testEquals4() throws Exception {
+        TTTuple tmp = new TTTuple("5", 9, -0.5f, 5);
+
+        boolean res = tmp.equals("fwe");
+
+        assertEquals(false, res);
+    }
+
+    @Test
     public void testToString() throws Exception {
         TTTuple tmp = new TTTuple("5", 9, -0.5f, 5);
 
@@ -51,6 +69,6 @@ public class TTTupleTest {
         assertEquals("5", tmp.getLabel());
         assertEquals(5, tmp.getIndex());
         assertEquals(9, tmp.getScaleSize());
-        assertEquals(-0.5f, tmp.getTranslation(), TTConstants.floatPrecisionDelta);
+        assertEquals(-0.5f, tmp.getTranslation(), TTConstants.FLOAT_PRECISION_DELTA);
     }
 }

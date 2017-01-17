@@ -1,7 +1,7 @@
 package dss.lingvo.utils;
 
 public class TTConstants {
-    private TTConstants() {}
+    public static final double FLOAT_PRECISION_DELTA = 0.0001;
 
-    public static final double floatPrecisionDelta = 0.0001;
+    private TTConstants() {}
 }

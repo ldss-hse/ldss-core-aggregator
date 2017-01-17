@@ -47,6 +47,15 @@ public class TTHFLTSTest {
     }
 
     @Test
+    public void testEquals4() throws Exception {
+        String[] x1 = {"vl", "l"};
+        TTHFLTS x1c1H = new TTHFLTS(x1);
+
+        boolean res = x1c1H.equals("e2");
+        assertEquals(false, res);
+    }
+
+    @Test
     public void testToString() throws Exception {
         String[] x1 = {"vl", "l"};
         TTHFLTS x1c1H = new TTHFLTS(x1);

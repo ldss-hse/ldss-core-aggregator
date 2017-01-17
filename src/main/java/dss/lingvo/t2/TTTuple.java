@@ -42,7 +42,7 @@ public class TTTuple {
         final TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
         if (obj != null) {
             isEqual = obj.getClass() == TTTuple.class &&
-                    Math.abs(translator.getTranslationFrom2Tuple(this)-translator.getTranslationFrom2Tuple((TTTuple) obj))< TTConstants.floatPrecisionDelta;
+                    Math.abs(translator.getTranslationFrom2Tuple(this)-translator.getTranslationFrom2Tuple((TTTuple) obj))< TTConstants.FLOAT_PRECISION_DELTA;
         }
         return isEqual;
     }

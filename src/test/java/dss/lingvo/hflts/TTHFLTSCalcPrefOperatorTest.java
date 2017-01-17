@@ -61,10 +61,19 @@ public class TTHFLTSCalcPrefOperatorTest {
     }
 
     @Test
-    public void testGetNonDominatedAlternatives() throws Exception {
+    public void testGetNonDominatedAlternatives1() throws Exception {
         float [] nonDominanceVector = {1f, 0f, 0.6666666f};
         int[] res = prefOperator.getNonDominatedAlternatives(nonDominanceVector);
         int [] expRes = {1};
+
+        assertArrayEquals(expRes, res);
+    }
+
+    @Test
+    public void testGetNonDominatedAlternatives2() throws Exception {
+        float [] nonDominanceVector = new float[1];
+        int[] res = prefOperator.getNonDominatedAlternatives(nonDominanceVector);
+        int [] expRes = {};
 
         assertArrayEquals(expRes, res);
     }

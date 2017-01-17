@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class TTConstantsTest {
     @Test
     public void testEquals1() throws Exception {
-        assertEquals(0.0001, TTConstants.floatPrecisionDelta, 0.0001);
+        assertEquals(0.0001, TTConstants.FLOAT_PRECISION_DELTA, 0.0001);
     }
 
     @Test

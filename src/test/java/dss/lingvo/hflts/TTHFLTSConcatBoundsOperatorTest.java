@@ -11,7 +11,7 @@ public class TTHFLTSConcatBoundsOperatorTest {
     private static TTHFLTSScale singleScale;
 
     @BeforeClass
-    public static void runOnceBeforeClass(){
+    public static void runOnceBeforeClass() {
         String[] scaleString = {"n", "vl", "l", "m", "h", "vh", "p"};
         singleScale = new TTHFLTSScale(scaleString);
         concatOperator = new TTHFLTSConcatBoundsOperator();
@@ -22,7 +22,7 @@ public class TTHFLTSConcatBoundsOperatorTest {
         final String top = "m";
         final String bottom = "h";
         String[] res = concatOperator.calculate(top, bottom, singleScale);
-        String [] expectedRes = {"m","h"};
+        String[] expectedRes = {"m", "h"};
         assertArrayEquals(res, expectedRes);
     }
 
@@ -31,7 +31,7 @@ public class TTHFLTSConcatBoundsOperatorTest {
         final String top = "l";
         final String bottom = "m";
         String[] res = concatOperator.calculate(top, bottom, singleScale);
-        String [] expectedRes = {"l","m"};
+        String[] expectedRes = {"l", "m"};
         assertArrayEquals(res, expectedRes);
     }
 
@@ -40,7 +40,25 @@ public class TTHFLTSConcatBoundsOperatorTest {
         final String top = "l";
         final String bottom = "h";
         String[] res = concatOperator.calculate(top, bottom, singleScale);
-        String [] expectedRes = {"l","h"};
+        String[] expectedRes = {"l", "h"};
+        assertArrayEquals(res, expectedRes);
+    }
+
+    @Test
+    public void testCalculate4() throws Exception {
+        final String top = "l";
+        final String bottom = "l";
+        String[] res = concatOperator.calculate(top, bottom, singleScale);
+        String[] expectedRes = {"l"};
+        assertArrayEquals(res, expectedRes);
+    }
+
+    @Test
+    public void testCalculate5() throws Exception {
+        final String top = "h";
+        final String bottom = "l";
+        String[] res = concatOperator.calculate(top, bottom, singleScale);
+        String[] expectedRes = {"l", "h"};
         assertArrayEquals(res, expectedRes);
     }
 
