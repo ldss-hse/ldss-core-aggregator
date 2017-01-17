@@ -17,7 +17,7 @@ public class TTHFLTS {
     public boolean equals(Object obj){
         boolean isEqual = false;
         if (obj != null) {
-            isEqual = obj.getClass() != TTHFLTS.class &&
+            isEqual = obj.getClass() == TTHFLTS.class &&
                     Arrays.equals(this.terms, ((TTHFLTS) obj).getTerms());
         }
         return isEqual;

@@ -1,17 +1,10 @@
 package dss.lingvo.t2;
 
-import java.util.Arrays;
-
 public class TTTuple {
     private final String myLabel;
     private float myTranslation;
     private int scaleSize;
     private int index;
-
-    public TTTuple(String label, int scaleSize) {
-        this.myLabel = label;
-        this.scaleSize = scaleSize;
-    }
 
     public TTTuple(String label, int scaleSize, float translation, int index) {
         this.myLabel = label;
@@ -50,5 +43,13 @@ public class TTTuple {
                     translator.getTranslationFrom2Tuple(this) == translator.getTranslationFrom2Tuple((TTTuple) obj);
         }
         return isEqual;
+    }
+
+    @Override
+    public int hashCode(){
+        int result = 17;
+        result = 31 * result + this.myLabel.hashCode();
+        result = 31 * result + this.scaleSize;
+        return result;
     }
 }

@@ -14,10 +14,10 @@ import static org.junit.Assert.*;
 
 public class TT2HFLTSMTWAOperatorTest {
     private static TT2HFLTSMTWAOperator mtwaOperator;
-    private static float [] weights;
+    private static float[] weights;
 
     @BeforeClass
-    public static void runOnceBeforeClass(){
+    public static void runOnceBeforeClass() {
         String[] scale9 = {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
         TTHFLTSScale hScale9 = new TTHFLTSScale(scale9);
 
@@ -52,7 +52,7 @@ public class TT2HFLTSMTWAOperatorTest {
         alt1.add(new TTTuple("4", 9, 0, 4));
 
         TTTuple res = mtwaOperator.calculate(alt1, weights, 9);
-        TTTuple expectedRes = new TTTuple("5",9,-0.5f,5);
+        TTTuple expectedRes = new TTTuple("5", 9, -0.5f, 5);
         assertEquals(expectedRes, res);
     }
 
@@ -65,7 +65,7 @@ public class TT2HFLTSMTWAOperatorTest {
         alt2.add(new TTTuple("5", 9, 0, 5));
 
         TTTuple res = mtwaOperator.calculate(alt2, weights, 9);
-        TTTuple expectedRes = new TTTuple("7",9,-0.25f,7);
+        TTTuple expectedRes = new TTTuple("7", 9, -0.25f, 7);
         assertEquals(expectedRes, res);
     }
 
@@ -78,7 +78,7 @@ public class TT2HFLTSMTWAOperatorTest {
         alt3.add(new TTTuple("3", 9, 0, 3));
 
         TTTuple res = mtwaOperator.calculate(alt3, weights, 9);
-        TTTuple expectedRes = new TTTuple("5",9,0f,5);
+        TTTuple expectedRes = new TTTuple("5", 9, 0f, 5);
         assertEquals(expectedRes, res);
     }
 
@@ -91,7 +91,7 @@ public class TT2HFLTSMTWAOperatorTest {
         alt4.add(new TTTuple("5", 9, 0, 5));
 
         TTTuple res = mtwaOperator.calculate(alt4, weights, 9);
-        TTTuple expectedRes = new TTTuple("5",9,0f,5);
+        TTTuple expectedRes = new TTTuple("5", 9, 0f, 5);
         assertEquals(expectedRes, res);
     }
 }

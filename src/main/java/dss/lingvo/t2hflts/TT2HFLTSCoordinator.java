@@ -6,7 +6,6 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.utils.TTUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class TT2HFLTSCoordinator {
         scaleStore.put(scale3.length, hScale3);
         scaleStore.put(scale5.length, hScale5);
 
-        final TTNormalizedTranslator myTranslator = TTNormalizedTranslator.getInstance();
         TTNormalizedTranslator.setScaleStore(scaleStore);
 
         int numberExp = 4;
