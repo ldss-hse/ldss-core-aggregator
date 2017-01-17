@@ -4,9 +4,13 @@ import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTSMTWAOperator;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,22 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TTUtilsTest {
+
+    private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+
+    @Before
+    public void setUpStreams() {
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
+    }
+
+    @After
+    public void cleanUpStreams() {
+        System.setOut(null);
+        System.setErr(null);
+    }
+
     @BeforeClass
     public static void runOnceBeforeClass(){
         String[] scale9 = {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
@@ -50,5 +70,20 @@ public class TTUtilsTest {
         expectedRes.add(new TTTuple("5",9,-0.5f,5));
 
         assertEquals(expectedRes, res);
+    }
+
+    @Test
+    public void testGetInstance() throws Exception {
+        TTUtils v = TTUtils.getInstance();
+
+        assertNotNull(v);
+    }
+
+    @Test
+    public void testInfo() throws Exception {
+        TTUtils v = TTUtils.getInstance();
+        v.info("hello");
+
+        assertEquals("hello\n", outContent.toString());
     }
 }

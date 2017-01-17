@@ -28,7 +28,7 @@ public class TTUtils {
             float tt2Translation = TTNormalizedTranslator.getInstance().getTranslationFrom2Tuple(tt2);
             return tt1Translation < tt2Translation ?
                     -1 :
-                    Math.abs(tt2Translation - tt1Translation) < TTConstants.FLOAT_PRECISION_DELTA ? 0 : 1;
+                    Math.abs(tt2Translation - tt1Translation) < TTConstants.floatPrecisionDelta ? 0 : 1;
         }));
         return res;
     }

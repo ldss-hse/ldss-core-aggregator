@@ -51,6 +51,6 @@ public class TTTupleTest {
         assertEquals("5", tmp.getLabel());
         assertEquals(5, tmp.getIndex());
         assertEquals(9, tmp.getScaleSize());
-        assertEquals(-0.5f, tmp.getTranslation(), TTConstants.FLOAT_PRECISION_DELTA);
+        assertEquals(-0.5f, tmp.getTranslation(), TTConstants.floatPrecisionDelta);
     }
 }

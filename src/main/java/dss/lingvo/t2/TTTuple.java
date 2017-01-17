@@ -1,5 +1,7 @@
 package dss.lingvo.t2;
 
+import dss.lingvo.utils.TTConstants;
+
 public class TTTuple {
     private final String myLabel;
     private float myTranslation;
@@ -40,7 +42,7 @@ public class TTTuple {
         final TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
         if (obj != null) {
             isEqual = obj.getClass() == TTTuple.class &&
-                    translator.getTranslationFrom2Tuple(this) == translator.getTranslationFrom2Tuple((TTTuple) obj);
+                    Math.abs(translator.getTranslationFrom2Tuple(this)-translator.getTranslationFrom2Tuple((TTTuple) obj))< TTConstants.floatPrecisionDelta;
         }
         return isEqual;
     }
