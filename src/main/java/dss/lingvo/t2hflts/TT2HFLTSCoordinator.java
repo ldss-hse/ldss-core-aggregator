@@ -5,7 +5,6 @@ import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.utils.TTUtils;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,7 +115,7 @@ public class TT2HFLTSCoordinator {
         float [] hWeights = {0.25f, 0.5f, 0.25f};
 
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
-        TT2HFLTS aggregationRes = tt2HFLTSMHTWAOperator.calculate(setsOrdered, hWeights, 7);
+        tt2HFLTSMHTWAOperator.calculate(setsOrdered, hWeights, 7);
 
     }
 }
