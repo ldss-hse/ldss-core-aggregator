@@ -1,11 +1,10 @@
-package dss.lingvo.hflts.samples;
+package dss.lingvo.samples;
 
 import dss.lingvo.hflts.*;
 import dss.lingvo.utils.TTUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class TTHFLTSCoordinator {
     private TTUtils log = TTUtils.getInstance();

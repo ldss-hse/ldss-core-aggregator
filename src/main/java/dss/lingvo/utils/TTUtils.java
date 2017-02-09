@@ -67,4 +67,9 @@ public class TTUtils {
         }
         return res;
     }
+
+    @FunctionalInterface
+    public interface PiecewiseLinearLambda{
+        public float compute(int i, float[] wVec, float x);
+    }
 }
