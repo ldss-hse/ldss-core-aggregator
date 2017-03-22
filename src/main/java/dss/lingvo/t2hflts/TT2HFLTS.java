@@ -46,10 +46,15 @@ public class TT2HFLTS {
         boolean isEqual = true;
         if (obj != null && obj.getClass() == TT2HFLTS.class) {
             List<TTTuple> objTerms = ((TT2HFLTS) obj).getTerms();
-            for (int i = 0; i < this.terms.size();++i){
-                isEqual = this.terms.get(i).equals(objTerms.get(i));
-                if (!isEqual){
-                    break;
+            if (objTerms.size()!= this.terms.size()){
+                isEqual = false;
+            }
+            if (isEqual) {
+                for (int i = 0; i < this.terms.size(); ++i) {
+                    isEqual = this.terms.get(i).equals(objTerms.get(i));
+                    if (!isEqual) {
+                        break;
+                    }
                 }
             }
         } else {

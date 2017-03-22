@@ -1,0 +1,87 @@
+{
+  "criteria": [
+    {
+      "criteriaID": "vbfg-ss-45",
+      "criteriaName": "Criteria Name",
+      "isQualitative": false
+    }
+  ],
+  "alternatives": [
+    {
+      "alternativeID": "abcd-ss-35",
+      "alternativeName": "Alternative Name",
+      "abstractionLevelID":3
+    }
+  ],
+  "scales": [
+    {
+      "scaleID": "Scale_One",
+      "scaleName": "Scale One Name",
+      "labels": [
+        "one",
+        "two",
+        "three"
+      ]
+    }
+  ],
+  "abstractionLevels": [
+    {
+      "abstractionLevelID": 3,
+      "abstractionLevelName": "Politics"
+    }
+  ],
+  "experts": [
+    {
+      "expertName": "Ivan Sergeev",
+      "expertID": "e1",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    }
+  ],
+  "estimations": {
+    "e1": [
+      {
+        "alternativeID": "abcd-ss-34",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "vbfg-ss-45",
+            "estimation": [
+              "bad",
+              "good"
+            ],
+            "scaleID": "Scale_Two"
+          },
+          {
+            "criteriaID": "vbfg-ss-46",
+            "estimation": [
+              "one"
+            ],
+            "scaleID": "Scale_One"
+          }
+        ]
+      },
+      {
+        "alternativeID": "abcd-ss-35",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "vbfg-ss-45",
+            "estimation": [
+              "very well"
+            ],
+            "scaleID": "Scale_Two"
+          },
+          {
+            "criteriaID": "vbfg-ss-46",
+            "estimation": [
+              "two",
+              "three"
+            ],
+            "scaleID": "Scale_One"
+          }
+        ]
+      }
+    ]
+  }
+}

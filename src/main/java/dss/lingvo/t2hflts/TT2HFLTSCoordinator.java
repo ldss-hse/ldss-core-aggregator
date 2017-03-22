@@ -1,5 +1,6 @@
 package dss.lingvo.t2hflts;
 
+import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
@@ -501,7 +502,6 @@ public class TT2HFLTSCoordinator {
             aggEstAll.add(aggregatedForSingle);
         }
 
-
         float[] w = {0f, 1f / 3, 2f / 3}; // weighting of alternatives
         float[] p = {0.3f, 0.4f, 0.3f}; // weighting of experts
         float[] v; // final weight for the aggregated estimate
@@ -532,6 +532,7 @@ public class TT2HFLTSCoordinator {
         }
 
         int numAlt = 5;
+        int numExp = 3;
         ArrayList<float[]> altWeights = new ArrayList<>();
         // sort
 
@@ -542,19 +543,35 @@ public class TT2HFLTSCoordinator {
         // alt 4
 
         for (int alt = 0; alt < numAlt; ++alt) {
+            final ArrayList<TT2HFLTS> tmpEstimates = new ArrayList<>();
+            for (int tmpExpIdx = 0; tmpExpIdx < numExp; ++tmpExpIdx){
+                tmpEstimates.add(aggEstAll.get(tmpExpIdx).get(alt));
+            }
+
+            List<TT2HFLTS> tmpSetsOrdered = TTUtils.sortTT2HFLTS(tmpEstimates, true);
+
+            // now let's make the right weights vector
+            float[] tmpP = new float[p.length]; // weighting of experts
+            for (int sortedIdx = 0; sortedIdx < p.length; ++sortedIdx){
+                int oldIndex = tmpEstimates.indexOf(tmpSetsOrdered.get(sortedIdx));
+                tmpP[sortedIdx] = p[oldIndex];
+            }
+
             float[] tmpVec = new float[p.length];
             for (int i = 0; i < p.length; ++i) {
                 float sum = 0;
                 for (int j = 0; j <= i; j++) {
-                    sum += p[j];
+                    sum += tmpP[j];
                 }
-                float sumRight = sum - p[i];
+                float sumRight = sum - tmpP[i];
                 TTUtils.PiecewiseLinearLambda leftLambda = null;
                 TTUtils.PiecewiseLinearLambda rightLambda = null;
                 ArrayList<Float[]> a = new ArrayList<Float[]>(wAsterixFunc.keySet());
 
                 int positionLeft = 0;
                 int positionRight = 0;
+
+                // now we need to choose correct lambda
                 for (int kk = 0; kk < a.size(); ++kk) {
                     Float[] key = a.get(kk);
                     if ((sum >= key[0] && sum < key[1] && kk < a.size() - 1) ||
@@ -568,9 +585,31 @@ public class TT2HFLTSCoordinator {
                         positionRight = kk;
                     }
                 }
+
+                // compute the corresponding value in v(i) weight vector
                 tmpVec[i] = leftLambda.compute(positionLeft, w, sum) - rightLambda.compute(positionRight, w, sumRight);
             }
             altWeights.add(tmpVec);
+        }
+
+        // now need to make the calculation for every alternative
+        ArrayList<TT2HFLTS> altOverall = new ArrayList<>();
+        for (int alt = 0; alt < numAlt; ++alt) {
+            ArrayList<TT2HFLTS> tmpSet = new ArrayList<>();
+            for (int tmpExpIdx = 0; tmpExpIdx < numExp; ++tmpExpIdx){
+                tmpSet.add(aggEstAll.get(tmpExpIdx).get(alt));
+            }
+//            List<TT2HFLTS> sortedTmpSet = TTUtils.sortTT2HFLTS(tmpSet, true);
+            altOverall.add(tt2HFLTSMHTWAOperator.calculate(tmpSet, altWeights.get(alt), 7));
+        }
+
+        // now just to sort
+        List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
+        System.out.println("The best alternative index: " + (altOverall.indexOf(sortedAltOverall.get(0))+1));
+
+        // 4 1 2 3 5
+        for (int sortIdx = 0; sortIdx < sortedAltOverall.size(); sortIdx++){
+            System.out.println("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx))+1));
         }
 
         // just to check
@@ -604,6 +643,8 @@ public class TT2HFLTSCoordinator {
 
         TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
         tt2HFLTSMHTWOWAOperator.calculate(null, null, 7);
+
+
 
     }
 }
