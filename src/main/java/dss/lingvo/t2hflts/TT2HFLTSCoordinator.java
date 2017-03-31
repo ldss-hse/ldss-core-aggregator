@@ -4,33 +4,33 @@ import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
+import dss.lingvo.utils.TTJSONReader;
 import dss.lingvo.utils.TTUtils;
+import dss.lingvo.utils.models.TTJSONModel;
 
+import java.io.IOException;
 import java.util.*;
 
 public class TT2HFLTSCoordinator {
     private TTUtils log = TTUtils.getInstance();
 
     public void go() {
-        String[] scale9 = {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
-        TTHFLTSScale hScale9 = new TTHFLTSScale(scale9);
+        TTJSONReader ttjsonReader = TTJSONReader.getInstance();
+        TTJSONModel ttjsonModel = null;
+        try {
+            ttjsonModel = ttjsonReader.readJSONDescription("description.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        String[] scale3 = {"0", "1", "2"};
-        TTHFLTSScale hScale3 = new TTHFLTSScale(scale3);
+        if (ttjsonModel == null){
+            return;
+        }
 
-        String[] scale5 = {"0", "1", "2", "3", "4"};
-        TTHFLTSScale hScale5 = new TTHFLTSScale(scale5);
+        // now we need to create all instances
+        // 1. register all scales
+        TTNormalizedTranslator.registerScalesBatch(ttjsonModel.getScales());
 
-        String[] scale7 = {"0", "1", "2", "3", "4", "5", "6"};
-        TTHFLTSScale hScale7 = new TTHFLTSScale(scale7);
-
-        HashMap<Integer, TTHFLTSScale> scaleStore = new HashMap<>();
-        scaleStore.put(scale9.length, hScale9);
-        scaleStore.put(scale3.length, hScale3);
-        scaleStore.put(scale5.length, hScale5);
-        scaleStore.put(scale7.length, hScale7);
-
-        TTNormalizedTranslator.setScaleStore(scaleStore);
 
         int numberExp = 4;
         float[] weights = new float[numberExp];
@@ -522,40 +522,5 @@ public class TT2HFLTSCoordinator {
         for (int sortIdx = 0; sortIdx < sortedAltOverall.size(); sortIdx++){
             System.out.println("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx))+1));
         }
-
-//        // just to check
-//        ArrayList<TTTuple> tmp = new ArrayList<>();
-//        tmp.add(new TTTuple("3", 7, 0.1f, 3));
-//        tmp.add(new TTTuple("3", 7, 0.4f, 3));
-//
-//        TT2HFLTS tmp2HFLTS2 = new TT2HFLTS(tmp);
-//
-//        ArrayList<TTTuple> tmp2 = new ArrayList<>();
-//        tmp2.add(new TTTuple("3", 7, 0.1f, 3));
-//        tmp2.add(new TTTuple("3", 7, 0.4f, 3));
-//        tmp2.add(new TTTuple("4", 7, -0.4f, 4));
-//        tmp2.add(new TTTuple("4", 7, 0.1f, 4));
-//
-//        TT2HFLTS tmp22HFLTS2 = new TT2HFLTS(tmp2);
-//
-//        ArrayList<TTTuple> tmp3 = new ArrayList<>();
-//        tmp3.add(new TTTuple("3", 5, -0.4f, 3));
-//
-//        TT2HFLTS tmp22HFLTS3 = new TT2HFLTS(tmp3);
-//
-//        ArrayList<TT2HFLTS> tmpSet = new ArrayList<>();
-//
-//        tmpSet.add(tmp2HFLTS2);
-//        tmpSet.add(tmp22HFLTS2);
-//        tmpSet.add(tmp22HFLTS3);
-//
-//        List<TT2HFLTS> tmpsetsOrdered = TTUtils.sortTT2HFLTS(tmpSet, true);
-//
-//
-//        TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator1 = new TT2HFLTSMHTWOWAOperator();
-//        tt2HFLTSMHTWOWAOperator1.calculate(0, 0, null, null, null, 7);
-//
-//
-
     }
 }
