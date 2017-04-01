@@ -36,7 +36,8 @@ public class TT2HFLTSMHTWAOperator {
             res.add(mtwaOperator.calculate(el.getTerms(), weights, targetScaleSize));
         }
         List<TTTuple> sortedRes = TTUtils.sortTuples(res, false);
-        return new TT2HFLTS(sortedRes);
+        TT2HFLTS sortedHFTLS = new TT2HFLTS(sortedRes);
+        return removeDuplicates(sortedHFTLS);
     }
 
     /**
@@ -116,5 +117,19 @@ public class TT2HFLTSMHTWAOperator {
             }
         }
         return actualSubsets;
+    }
+
+    private TT2HFLTS removeDuplicates(TT2HFLTS set){
+        List<TTTuple> newList = new ArrayList<>();
+        for (TTTuple el : set.getTerms()){
+            TTTuple existing = newList.stream()
+                    .filter(x -> x.equals(el))
+                    .findFirst()
+                    .orElse(null);
+            if (existing == null){
+                newList.add(el);
+            }
+        }
+        return new TT2HFLTS(newList);
     }
 }

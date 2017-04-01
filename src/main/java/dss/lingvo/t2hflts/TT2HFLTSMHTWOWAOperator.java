@@ -24,7 +24,9 @@ public class TT2HFLTSMHTWOWAOperator {
             for (int tmpExpIdx = 0; tmpExpIdx < numExp; ++tmpExpIdx) {
                 tmpSet.add(aggEstAll.get(tmpExpIdx).get(alt));
             }
-            altOverall.add(tt2HFLTSMHTWAOperator.calculate(tmpSet, altWeights.get(alt), targetScaleSize));
+            // what if we also sort them??
+            List<TT2HFLTS> newSet = TTUtils.sortTT2HFLTS(tmpSet, true);
+            altOverall.add(tt2HFLTSMHTWAOperator.calculate(newSet, altWeights.get(alt), targetScaleSize));
         }
         return altOverall;
     }

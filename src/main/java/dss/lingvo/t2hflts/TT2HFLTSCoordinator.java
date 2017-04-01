@@ -125,83 +125,21 @@ public class TT2HFLTSCoordinator {
         int NUMBER_OF_ALTERNATIVES = ttjsonModel.getAlternatives().size();
         int NUMBER_OF_CRITERIA = ttjsonModel.getCriteria().size();
 
-        Map<String, List<TTExpertEstimationsModel>> fileEstimations = ttjsonModel.getEstimations();
-
-        Map<String, List<TTExpertEstimationsModel>> treeMap = new TreeMap<String, List<TTExpertEstimationsModel>>(
-                (Comparator<String>) (o1, o2) -> {
-                    int num1 = Integer.parseInt(o1.replaceAll("[\\D]", ""));
-                    int num2 = Integer.parseInt(o2.replaceAll("[\\D]", ""));
-                    return num1 - num2;
-                }
-        );
-
-        treeMap.putAll(fileEstimations);
-
-        ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = new ArrayList<>();
-
-        for(Map.Entry<String, List<TTExpertEstimationsModel>> el:fileEstimations.entrySet()){
-            ArrayList<ArrayList<TT2HFLTS>> expAll = new ArrayList<>();
-            el.getValue().sort((Comparator<TTExpertEstimationsModel>) (o1, o2) -> {
-                int num1 = Integer.parseInt(o1.getAlternativeID().replaceAll("[\\D]", ""));
-                int num2 = Integer.parseInt(o2.getAlternativeID().replaceAll("[\\D]", ""));
-                return num1 - num2;
-            });
-            // loop though sorted by alternative
-            for (TTExpertEstimationsModel model: el.getValue()){
-                model.getCriteria2Estimation().sort((Comparator<TTCriteriaEstimationsModel>) (o1, o2) -> {
-                    int num1 = Integer.parseInt(o1.getCriteriaID().replaceAll("[\\D]", ""));
-                    int num2 = Integer.parseInt(o2.getCriteriaID().replaceAll("[\\D]", ""));
-                    return num1 - num2;
-                });
-                ArrayList<TT2HFLTS> expToAltToCrit = new ArrayList<>();
-                // loop though sorted by criteria
-                for (TTCriteriaEstimationsModel criterion: model.getCriteria2Estimation()){
-                    List<String> val = criterion.getEstimation();
-                    ArrayList<TTTuple> expToAltToCritTTuple = new ArrayList<>();
-                    TTScaleModel scale= ttjsonModel.getScales()
-                            .stream()
-                            .filter(x -> x.getScaleID().equals(criterion.getScaleID()))
-                            .findFirst()
-                            .get();
-                    int scaleSize = scale.getLabels().size();
-                    for (String label: val){
-                        expToAltToCritTTuple.add(new TTTuple(label, scaleSize, 0, scale.getLabels().indexOf(label)));
-                    }
-                    expToAltToCrit.add(new TT2HFLTS(expToAltToCritTTuple));
-                }
-                expAll.add(expToAltToCrit);
-            }
-            expEstimationsAll.add(expAll);
-        }
+        ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
 
         // 2. We need to aggregate value for each alternative for each expert (so collapse
         // all estimates by criteria)
         float[] criteriaWeights = {0.5f, 0.3f, 0.2f};
 
-        TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperatorFinal = new TT2HFLTSMHTWAOperator();
-        TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
-
-        ArrayList<ArrayList<TT2HFLTS>> aggEstAll = new ArrayList<>();
-
-        for (ArrayList<ArrayList<TT2HFLTS>> singleExpertMatrix: expEstimationsAll){
-            ArrayList<TT2HFLTS> aggregatedForSingle = new ArrayList<>();
-            for (ArrayList<TT2HFLTS> alternativePerCriteriaList: singleExpertMatrix){
-                TT2HFLTS aggRes = tt2HFLTSMHTWAOperatorFinal.calculate(alternativePerCriteriaList, criteriaWeights, 7);
-                aggregatedForSingle.add(aggRes);
-            }
-            aggEstAll.add(aggregatedForSingle);
-        }
+        ArrayList<ArrayList<TT2HFLTS>> aggEstAll = TTUtils.aggregateIndividualEstimations(expEstimationsAll, criteriaWeights);
 
         float[] w = {0f, 1f / 3, 2f / 3}; // weighting of alternatives
         float[] p = {0.3f, 0.4f, 0.3f}; // weighting of experts
-        float[] v; // final weight for the aggregated estimate
 
-        // get monotone piecewise function
-
-        int numAlt = 5;
-        int numExp = 3;
         // now need to make the calculation for every alternative
-        ArrayList<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(numAlt, numExp, p, w, aggEstAll, 7);
+        TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
+        ArrayList<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(NUMBER_OF_ALTERNATIVES,
+                NUMBER_OF_EXPERTS, p, w, aggEstAll, 7);
 
         // now just to sort
         List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
