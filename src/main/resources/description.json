@@ -1,15 +1,45 @@
 {
   "criteria": [
     {
-      "criteriaID": "vbfg-ss-45",
-      "criteriaName": "Criteria Name",
+      "criteriaID": "criterion1",
+      "criteriaName": "costs",
+      "qualitative": false
+    },
+    {
+      "criteriaID": "criterion2",
+      "criteriaName": "environmental reservation",
+      "qualitative": false
+    },
+    {
+      "criteriaID": "criterion3",
+      "criteriaName": "technical reliability",
       "qualitative": false
     }
   ],
   "alternatives": [
     {
-      "alternativeID": "abcd-ss-35",
-      "alternativeName": "Alternative Name",
+      "alternativeID": "alternative1",
+      "alternativeName": "Incineration",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative2",
+      "alternativeName": "Landfill disposal",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative3",
+      "alternativeName": "Steam sterilization",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative4",
+      "alternativeName": "Microwave",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative5",
+      "alternativeName": "Electrochemical technologies",
       "abstractionLevelID": 3
     }
   ],
@@ -42,24 +72,24 @@
       "scaleID": "Scale_Five",
       "scaleName": "Scale Five Name",
       "labels": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4"
+        "vp",
+        "p",
+        "m",
+        "g",
+        "vg"
       ]
     },
     {
       "scaleID": "Scale_Seven",
       "scaleName": "Scale Seven Name",
       "labels": [
-        "0",
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6"
+        "vp",
+        "p",
+        "mp",
+        "m",
+        "mg",
+        "g",
+        "vg"
       ]
     }
   ],
@@ -71,8 +101,24 @@
   ],
   "experts": [
     {
-      "expertName": "Ivan Sergeev",
-      "expertID": "e1",
+      "expertName": "experts from WCH",
+      "expertID": "expert1",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    },
+    {
+      "expertName": "professors from universities",
+      "expertID": "expert2",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    },
+    {
+      "expertName": "waste management experts",
+      "expertID": "expert3",
       "competencies": [
         "economy",
         "politics"
@@ -80,44 +126,413 @@
     }
   ],
   "estimations": {
-    "e1": [
+    "expert1": [
       {
-        "alternativeID": "abcd-ss-34",
+        "alternativeID": "alternative1",
         "criteria2Estimation": [
           {
-            "criteriaID": "vbfg-ss-45",
+            "criteriaID": "criterion1",
             "estimation": [
-              "bad",
-              "good"
+              "mg",
+              "g"
             ],
-            "scaleID": "Scale_Two"
+            "scaleID": "Scale_Seven"
           },
           {
-            "criteriaID": "vbfg-ss-46",
+            "criteriaID": "criterion2",
             "estimation": [
-              "one"
+              "m"
             ],
-            "scaleID": "Scale_One"
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
           }
         ]
       },
       {
-        "alternativeID": "abcd-ss-35",
+        "alternativeID": "alternative2",
         "criteria2Estimation": [
           {
-            "criteriaID": "vbfg-ss-45",
+            "criteriaID": "criterion1",
             "estimation": [
-              "very well"
+              "mp"
             ],
-            "scaleID": "Scale_Two"
+            "scaleID": "Scale_Seven"
           },
           {
-            "criteriaID": "vbfg-ss-46",
+            "criteriaID": "criterion2",
             "estimation": [
-              "two",
-              "three"
+              "g",
+              "vg"
             ],
-            "scaleID": "Scale_One"
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative3",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "p"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative4",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "g",
+              "vg"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative5",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "p"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "g",
+              "vg"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      }
+    ],
+    "expert2": [
+      {
+        "alternativeID": "alternative1",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "mp"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative2",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "mg",
+              "g"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "mp"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative3",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "mp"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative4",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "g",
+              "vg"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "mp"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative5",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "mp"
+            ],
+            "scaleID": "Scale_Seven"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Seven"
+          }
+        ]
+      }
+    ],
+    "expert3": [
+      {
+        "alternativeID": "alternative1",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "vg"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m",
+              "g"
+            ],
+            "scaleID": "Scale_Five"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative2",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "vg"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative3",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m",
+              "mg"
+            ],
+            "scaleID": "Scale_Five"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative4",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "g",
+              "vg"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "g"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          }
+        ]
+      },
+      {
+        "alternativeID": "alternative5",
+        "criteria2Estimation": [
+          {
+            "criteriaID": "criterion1",
+            "estimation": [
+              "m"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion2",
+            "estimation": [
+              "vp",
+              "p"
+            ],
+            "scaleID": "Scale_Five"
+          },
+          {
+            "criteriaID": "criterion3",
+            "estimation": [
+              "vp"
+            ],
+            "scaleID": "Scale_Five"
           }
         ]
       }
