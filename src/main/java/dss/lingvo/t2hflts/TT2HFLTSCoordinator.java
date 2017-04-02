@@ -12,16 +12,12 @@ import java.util.*;
 public class TT2HFLTSCoordinator {
     private TTUtils log = TTUtils.getInstance();
 
-    public void go() {
+    public void go() throws IOException {
         TTJSONReader ttjsonReader = TTJSONReader.getInstance();
         TTJSONModel ttjsonModel = null;
-        try {
-            ttjsonModel = ttjsonReader.readJSONDescription("description.json");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ttjsonModel = ttjsonReader.readJSONDescription("description.json");
 
-        if (ttjsonModel == null){
+        if (ttjsonModel == null) {
             return;
         }
 
@@ -140,11 +136,11 @@ public class TT2HFLTSCoordinator {
 
         // now just to sort
         List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
-        System.out.println("The best alternative index: " + (altOverall.indexOf(sortedAltOverall.get(0))+1));
+        System.out.println("The best alternative index: " + (altOverall.indexOf(sortedAltOverall.get(0)) + 1));
 
         // 4 1 2 3 5
-        for (int sortIdx = 0; sortIdx < sortedAltOverall.size(); sortIdx++){
-            System.out.println("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx))+1));
+        for (int sortIdx = 0; sortIdx < sortedAltOverall.size(); sortIdx++) {
+            System.out.println("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx)) + 1));
         }
     }
 }

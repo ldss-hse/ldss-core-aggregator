@@ -2,11 +2,13 @@ package dss.lingvo;
 
 import dss.lingvo.t2hflts.TT2HFLTSCoordinator;
 
+import java.io.IOException;
+
 public class Main {
 
     private Main(){}
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 //        TT2HFLTSCoordinator c = new TT2HFLTSCoordinator();
 //        c.go();
 
