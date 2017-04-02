@@ -56,7 +56,7 @@ public class TT2HFLTSMHTWOWAOperatorTest {
         int numExp = 3;
         float[] w = {0f, 1f / 3, 2f / 3}; // weighting of alternatives
         float[] p = {0.3f, 0.4f, 0.3f}; // weighting of experts
-        ArrayList<float[]> altOverall = tt2HFLTSMHTWOWAOperator.calculateAlternativeWeights(numAlt, numExp, p, w, aggEstAll);
+        List<float[]> altOverall = tt2HFLTSMHTWOWAOperator.calculateAlternativeWeights(numAlt, numExp, p, w, aggEstAll);
         ArrayList<float[]> expResList = new ArrayList<>();
         float[] alt1 = {0f, 4/15f, 11/15f};
         float[] alt2 = {0f, 2/5f, 3/5f};

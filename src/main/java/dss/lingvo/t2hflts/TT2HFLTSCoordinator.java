@@ -115,8 +115,8 @@ public class TT2HFLTSCoordinator {
         // 1. Gather feedback and translate directly to the TT2HFLTS (per each expert)
 
         // 2. read estimates from file
-        int NUMBER_OF_EXPERTS = ttjsonModel.getExperts().size();
-        int NUMBER_OF_ALTERNATIVES = ttjsonModel.getAlternatives().size();
+        int NUMEXPERTS = ttjsonModel.getExperts().size();
+        int NUMALTERNATIVES = ttjsonModel.getAlternatives().size();
 
         List<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
 
@@ -131,16 +131,16 @@ public class TT2HFLTSCoordinator {
 
         // now need to make the calculation for every alternative
         TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
-        List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(NUMBER_OF_ALTERNATIVES,
-                NUMBER_OF_EXPERTS, p, w, aggEstAll, 7);
+        List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(NUMALTERNATIVES,
+                NUMEXPERTS, p, w, aggEstAll, 7);
 
         // now just to sort
         List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
-        System.out.println("The best alternative index: " + (altOverall.indexOf(sortedAltOverall.get(0)) + 1));
+        log.info("The best alternative index: " + (altOverall.indexOf(sortedAltOverall.get(0)) + 1));
 
         // 4 1 2 3 5
         for (int sortIdx = 0; sortIdx < sortedAltOverall.size(); sortIdx++) {
-            System.out.println("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx)) + 1));
+            log.info("The original index: " + (altOverall.indexOf(sortedAltOverall.get(sortIdx)) + 1));
         }
     }
 }

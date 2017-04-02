@@ -16,7 +16,7 @@ public class TT2HFLTSMHTWOWAOperator {
                                          int targetScaleSize) {
         // now need to make the calculation for every alternative
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
-        ArrayList<float[]> altWeights = calculateAlternativeWeights(numAlt, numExp, p, w, aggEstAll);
+        List<float[]> altWeights = calculateAlternativeWeights(numAlt, numExp, p, w, aggEstAll);
 
         ArrayList<TT2HFLTS> altOverall = new ArrayList<>();
         for (int alt = 0; alt < numAlt; ++alt) {
@@ -59,7 +59,7 @@ public class TT2HFLTSMHTWOWAOperator {
         return wAsterixFunc;
     }
 
-    public ArrayList<float[]> calculateAlternativeWeights(int numAlt,
+    public List<float[]> calculateAlternativeWeights(int numAlt,
                                                           int numExp,
                                                           float[] p,
                                                           float[] w,
@@ -106,13 +106,13 @@ public class TT2HFLTSMHTWOWAOperator {
                 // now we need to choose correct lambda
                 for (int kk = 0; kk < a.size(); ++kk) {
                     Float[] key = a.get(kk);
-                    if ((sum >= key[0] && sum < key[1] && kk < a.size() - 1) ||
-                            (sum >= key[0] && sum <= key[1] && kk == a.size() - 1)) {
+                    if (sum >= key[0] && ((sum < key[1] && kk < a.size() - 1) ||
+                            (sum <= key[1] && kk == a.size() - 1))) {
                         leftLambda = wAsterixFunc.get(key);
                         positionLeft = kk;
                     }
-                    if ((sumRight >= key[0] && sumRight < key[1] && kk < a.size() - 1) ||
-                            (sumRight >= key[0] && sumRight <= key[1] && kk == a.size() - 1)) {
+                    if (sumRight >= key[0] && ((sumRight < key[1] && kk < a.size() - 1) ||
+                            (sumRight <= key[1] && kk == a.size() - 1))) {
                         rightLambda = wAsterixFunc.get(key);
                         positionRight = kk;
                     }

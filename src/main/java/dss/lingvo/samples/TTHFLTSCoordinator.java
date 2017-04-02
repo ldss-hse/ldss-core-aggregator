@@ -12,7 +12,7 @@ public class TTHFLTSCoordinator {
     private ArrayList<TTHFLTSAlternativeEstimation> rawEstimates;
 
     public TTHFLTSCoordinator() {
-        rawEstimates = new ArrayList<TTHFLTSAlternativeEstimation>();
+        rawEstimates = new ArrayList<>();
     }
 
     public void go() {
@@ -65,7 +65,7 @@ public class TTHFLTSCoordinator {
         TTHFLTSScale singleScale = new TTHFLTSScale(scaleString);
 
         TTHFLTSMinUpperOperator minUpper = new TTHFLTSMinUpperOperator();
-        ArrayList<String> topEstimates = new ArrayList<String>();
+        ArrayList<String> topEstimates = new ArrayList<>();
         for (TTHFLTSAlternativeEstimation i : rawEstimates) {
             topEstimates.add(minUpper.calculate(i, singleScale));
         }
@@ -73,7 +73,7 @@ public class TTHFLTSCoordinator {
         log.info("Step 2.2 Aggregate Max-Lower for HFLTS for each alternative...");
 
         TTHFLTSMaxLowerOperator maxLower = new TTHFLTSMaxLowerOperator();
-        ArrayList<String> bottomEstimates = new ArrayList<String>();
+        ArrayList<String> bottomEstimates = new ArrayList<>();
         for (TTHFLTSAlternativeEstimation i : rawEstimates) {
             bottomEstimates.add(maxLower.calculate(i, singleScale));
         }
@@ -81,7 +81,7 @@ public class TTHFLTSCoordinator {
 
         log.info("Step 2.3 Concatenate bounds for each alternative...");
         TTHFLTSConcatBoundsOperator concatOperator = new TTHFLTSConcatBoundsOperator();
-        ArrayList<String[]> bounds = new ArrayList<String[]>();
+        ArrayList<String[]> bounds = new ArrayList<>();
         for (int i = 0; i < topEstimates.size(); i++) {
             final String top = topEstimates.get(i);
             final String bottom = bottomEstimates.get(i);
