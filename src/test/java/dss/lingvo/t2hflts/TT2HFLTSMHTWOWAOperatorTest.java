@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
 public class TT2HFLTSMHTWOWAOperatorTest {
 
     private static TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator;
-    private static ArrayList<ArrayList<TT2HFLTS>> aggEstAll;
+    private static List<ArrayList<TT2HFLTS>> aggEstAll;
 
     @BeforeClass
     public static void runOnceBeforeClass() {
@@ -36,7 +37,7 @@ public class TT2HFLTSMHTWOWAOperatorTest {
 
         tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
 
-        ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
+        List<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
 
         float[] criteriaWeights = {0.5f, 0.3f, 0.2f};
 

@@ -54,14 +54,18 @@ public class TT2HFLTSMHTWAOperator {
 
         if (k <= inputSize) {
             // first index sequence: 0, 1, 2, ...
-            for (int i = 0; (s[i] = i) < k - 1; i++) ;
+            for (int i = 0; i < k - 1; i++){
+                s[i] = i;
+            }
             int[] tmpArr = new int[k];
             System.arraycopy(s, 0, tmpArr, 0, s.length);
             subsets.add(tmpArr);
             for (; ; ) {
                 int i;
                 // find position of item that can be incremented
-                for (i = k - 1; i >= 0 && s[i] == inputSize - k + i; i--) ;
+                for (i = k - 1; i >= 0 && s[i] == inputSize - k + i; ){
+                    i--;
+                }
                 if (i < 0) {
                     break;
                 } else {

@@ -8,11 +8,11 @@ import java.util.List;
 
 public class TT2HFLTSMHTWOWAOperator {
 
-    public ArrayList<TT2HFLTS> calculate(int numAlt,
+    public List<TT2HFLTS> calculate(int numAlt,
                                          int numExp,
                                          float[] p,
                                          float[] w,
-                                         ArrayList<ArrayList<TT2HFLTS>> aggEstAll,
+                                         List<ArrayList<TT2HFLTS>> aggEstAll,
                                          int targetScaleSize) {
         // now need to make the calculation for every alternative
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
@@ -63,7 +63,7 @@ public class TT2HFLTSMHTWOWAOperator {
                                                           int numExp,
                                                           float[] p,
                                                           float[] w,
-                                                          ArrayList<ArrayList<TT2HFLTS>> aggEstAll) {
+                                                          List<ArrayList<TT2HFLTS>> aggEstAll) {
         LinkedHashMap<Float[], TTUtils.PiecewiseLinearLambda> wAsterixFunc = prepareAsterixLambdas(w);
         ArrayList<float[]> altWeights = new ArrayList<>();
         // sort
@@ -98,7 +98,7 @@ public class TT2HFLTSMHTWOWAOperator {
                 float sumRight = sum - tmpP[i];
                 TTUtils.PiecewiseLinearLambda leftLambda = null;
                 TTUtils.PiecewiseLinearLambda rightLambda = null;
-                ArrayList<Float[]> a = new ArrayList<Float[]>(wAsterixFunc.keySet());
+                ArrayList<Float[]> a = new ArrayList<>(wAsterixFunc.keySet());
 
                 int positionLeft = 0;
                 int positionRight = 0;

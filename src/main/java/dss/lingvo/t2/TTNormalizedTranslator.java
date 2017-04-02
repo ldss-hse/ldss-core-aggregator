@@ -23,24 +23,6 @@ public class TTNormalizedTranslator {
             myScaleStore.put(tmp.length, new TTHFLTSScale(tmp));
         }
 
-        String[] scale9 = {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
-        TTHFLTSScale hScale9 = new TTHFLTSScale(scale9);
-
-        String[] scale3 = {"0", "1", "2"};
-        TTHFLTSScale hScale3 = new TTHFLTSScale(scale3);
-
-        String[] scale5 = {"0", "1", "2", "3", "4"};
-        TTHFLTSScale hScale5 = new TTHFLTSScale(scale5);
-
-        String[] scale7 = {"0", "1", "2", "3", "4", "5", "6"};
-        TTHFLTSScale hScale7 = new TTHFLTSScale(scale7);
-
-
-
-        myScaleStore.put(scale3.length, hScale3);
-        myScaleStore.put(scale5.length, hScale5);
-        myScaleStore.put(scale7.length, hScale7);
-
         TTNormalizedTranslator.setScaleStore(myScaleStore);
     }
 

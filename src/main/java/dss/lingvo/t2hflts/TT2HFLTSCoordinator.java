@@ -1,7 +1,5 @@
 package dss.lingvo.t2hflts;
 
-import dss.lingvo.hflts.TTHFLTS;
-import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.utils.TTJSONReader;
@@ -20,7 +18,7 @@ public class TT2HFLTSCoordinator {
         try {
             ttjsonModel = ttjsonReader.readJSONDescription("description.json");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         if (ttjsonModel == null){
@@ -123,22 +121,21 @@ public class TT2HFLTSCoordinator {
         // 2. read estimates from file
         int NUMBER_OF_EXPERTS = ttjsonModel.getExperts().size();
         int NUMBER_OF_ALTERNATIVES = ttjsonModel.getAlternatives().size();
-        int NUMBER_OF_CRITERIA = ttjsonModel.getCriteria().size();
 
-        ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
+        List<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = TTUtils.getAllEstimationsFromJSONModel(ttjsonModel);
 
         // 2. We need to aggregate value for each alternative for each expert (so collapse
         // all estimates by criteria)
         float[] criteriaWeights = {0.5f, 0.3f, 0.2f};
 
-        ArrayList<ArrayList<TT2HFLTS>> aggEstAll = TTUtils.aggregateIndividualEstimations(expEstimationsAll, criteriaWeights);
+        List<ArrayList<TT2HFLTS>> aggEstAll = TTUtils.aggregateIndividualEstimations(expEstimationsAll, criteriaWeights);
 
         float[] w = {0f, 1f / 3, 2f / 3}; // weighting of alternatives
         float[] p = {0.3f, 0.4f, 0.3f}; // weighting of experts
 
         // now need to make the calculation for every alternative
         TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
-        ArrayList<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(NUMBER_OF_ALTERNATIVES,
+        List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(NUMBER_OF_ALTERNATIVES,
                 NUMBER_OF_EXPERTS, p, w, aggEstAll, 7);
 
         // now just to sort

@@ -38,9 +38,12 @@ public class TTUtils {
     private static int compareTTTuples(TTTuple tt1, TTTuple tt2) {
         float tt1Translation = TTNormalizedTranslator.getInstance().getTranslationFrom2Tuple(tt1);
         float tt2Translation = TTNormalizedTranslator.getInstance().getTranslationFrom2Tuple(tt2);
-        return tt1Translation < tt2Translation ?
-                -1 :
-                Math.abs(tt2Translation - tt1Translation) < TTConstants.FLOAT_PRECISION_DELTA ? 0 : 1;
+        if (tt1Translation < tt2Translation) {
+            return -1;
+        } else if (Math.abs(tt2Translation - tt1Translation) < TTConstants.FLOAT_PRECISION_DELTA) {
+            return 0;
+        }
+        return 1;
     }
 
     private static int compareTT2HFLTS(TT2HFLTS tt1, TT2HFLTS tt2) {
@@ -53,7 +56,7 @@ public class TTUtils {
             float tt2Variance = tt2.getVariance();
             if (tt1Variance < tt2Variance) {
                 return 1;
-            } else if (Math.abs(tt1Variance- tt2Variance) < TTConstants.FLOAT_PRECISION_DELTA) {
+            } else if (Math.abs(tt1Variance - tt2Variance) < TTConstants.FLOAT_PRECISION_DELTA) {
                 return 0;
             }
             return -1;
@@ -72,17 +75,18 @@ public class TTUtils {
     }
 
     @FunctionalInterface
-    public interface PiecewiseLinearLambda{
+    public interface PiecewiseLinearLambda {
         public float compute(int i, float[] wVec, float x);
     }
 
-    public static ArrayList<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromJSONModel(TTJSONModel ttjsonModel){
+    public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromJSONModel(TTJSONModel ttjsonModel) {
         Map<String, List<TTExpertEstimationsModel>> fileEstimations = ttjsonModel.getEstimations();
 
-        Map<String, List<TTExpertEstimationsModel>> treeMap = new TreeMap<String, List<TTExpertEstimationsModel>>(
+        String integerRegex = "[\\D]";
+        Map<String, List<TTExpertEstimationsModel>> treeMap = new TreeMap<>(
                 (Comparator<String>) (o1, o2) -> {
-                    int num1 = Integer.parseInt(o1.replaceAll("[\\D]", ""));
-                    int num2 = Integer.parseInt(o2.replaceAll("[\\D]", ""));
+                    int num1 = Integer.parseInt(o1.replaceAll(integerRegex, ""));
+                    int num2 = Integer.parseInt(o2.replaceAll(integerRegex, ""));
                     return num1 - num2;
                 }
         );
@@ -91,32 +95,32 @@ public class TTUtils {
 
         ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll = new ArrayList<>();
 
-        for(Map.Entry<String, List<TTExpertEstimationsModel>> el:fileEstimations.entrySet()){
+        for (Map.Entry<String, List<TTExpertEstimationsModel>> el : treeMap.entrySet()) {
             ArrayList<ArrayList<TT2HFLTS>> expAll = new ArrayList<>();
             el.getValue().sort((Comparator<TTExpertEstimationsModel>) (o1, o2) -> {
-                int num1 = Integer.parseInt(o1.getAlternativeID().replaceAll("[\\D]", ""));
-                int num2 = Integer.parseInt(o2.getAlternativeID().replaceAll("[\\D]", ""));
+                int num1 = Integer.parseInt(o1.getAlternativeID().replaceAll(integerRegex, ""));
+                int num2 = Integer.parseInt(o2.getAlternativeID().replaceAll(integerRegex, ""));
                 return num1 - num2;
             });
             // loop though sorted by alternative
-            for (TTExpertEstimationsModel model: el.getValue()){
+            for (TTExpertEstimationsModel model : el.getValue()) {
                 model.getCriteria2Estimation().sort((Comparator<TTCriteriaEstimationsModel>) (o1, o2) -> {
-                    int num1 = Integer.parseInt(o1.getCriteriaID().replaceAll("[\\D]", ""));
-                    int num2 = Integer.parseInt(o2.getCriteriaID().replaceAll("[\\D]", ""));
+                    int num1 = Integer.parseInt(o1.getCriteriaID().replaceAll(integerRegex, ""));
+                    int num2 = Integer.parseInt(o2.getCriteriaID().replaceAll(integerRegex, ""));
                     return num1 - num2;
                 });
                 ArrayList<TT2HFLTS> expToAltToCrit = new ArrayList<>();
                 // loop though sorted by criteria
-                for (TTCriteriaEstimationsModel criterion: model.getCriteria2Estimation()){
+                for (TTCriteriaEstimationsModel criterion : model.getCriteria2Estimation()) {
                     List<String> val = criterion.getEstimation();
                     ArrayList<TTTuple> expToAltToCritTTuple = new ArrayList<>();
-                    TTScaleModel scale= ttjsonModel.getScales()
+                    TTScaleModel scale = ttjsonModel.getScales()
                             .stream()
                             .filter(x -> x.getScaleID().equals(criterion.getScaleID()))
                             .findFirst()
                             .orElse(null);
                     int scaleSize = scale.getLabels().size();
-                    for (String label: val){
+                    for (String label : val) {
                         expToAltToCritTTuple.add(new TTTuple(label, scaleSize, 0, scale.getLabels().indexOf(label)));
                     }
                     expToAltToCrit.add(new TT2HFLTS(expToAltToCritTTuple));
@@ -128,13 +132,13 @@ public class TTUtils {
         return expEstimationsAll;
     }
 
-    public static ArrayList<ArrayList<TT2HFLTS>> aggregateIndividualEstimations(ArrayList<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll, float[] criteriaWeights){
+    public static List<ArrayList<TT2HFLTS>> aggregateIndividualEstimations(List<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll, float[] criteriaWeights) {
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperatorFinal = new TT2HFLTSMHTWAOperator();
         ArrayList<ArrayList<TT2HFLTS>> aggEstAll = new ArrayList<>();
 
-        for (ArrayList<ArrayList<TT2HFLTS>> singleExpertMatrix: expEstimationsAll){
+        for (List<ArrayList<TT2HFLTS>> singleExpertMatrix : expEstimationsAll) {
             ArrayList<TT2HFLTS> aggregatedForSingle = new ArrayList<>();
-            for (ArrayList<TT2HFLTS> alternativePerCriteriaList: singleExpertMatrix){
+            for (List<TT2HFLTS> alternativePerCriteriaList : singleExpertMatrix) {
                 TT2HFLTS aggRes = tt2HFLTSMHTWAOperatorFinal.calculate(alternativePerCriteriaList, criteriaWeights, 7);
                 aggregatedForSingle.add(aggRes);
             }
