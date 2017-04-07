@@ -1,0 +1,136 @@
+{
+  "alternatives": [
+    {
+      "alternativeID": "alternative1",
+      "alternativeName": "Incineration",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative2",
+      "alternativeName": "Landfill disposal",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative3",
+      "alternativeName": "Steam sterilization",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative4",
+      "alternativeName": "Microwave",
+      "abstractionLevelID": 3
+    },
+    {
+      "alternativeID": "alternative5",
+      "alternativeName": "Electrochemical technologies",
+      "abstractionLevelID": 3
+    }
+  ],
+  "scales": [
+    {
+      "scaleID": "Scale_Nine",
+      "scaleName": "Scale Nine Name",
+      "labels": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    {
+      "scaleID": "Scale_Three",
+      "scaleName": "Scale Three Name",
+      "labels": [
+        "0",
+        "1",
+        "2"
+      ]
+    },
+    {
+      "scaleID": "Scale_Five",
+      "scaleName": "Scale Five Name",
+      "labels": [
+        "vp",
+        "p",
+        "m",
+        "g",
+        "vg"
+      ]
+    },
+    {
+      "scaleID": "Scale_Seven",
+      "scaleName": "Scale Seven Name",
+      "labels": [
+        "vp",
+        "p",
+        "mp",
+        "m",
+        "mg",
+        "g",
+        "vg"
+      ]
+    }
+  ],
+  "abstractionLevels": [
+    {
+      "abstractionLevelID": 3,
+      "abstractionLevelName": "Politics"
+    }
+  ],
+  "abstractionLevelWeights": {
+    "1": 0.125,
+    "2": 0.125,
+    "3": 0.125,
+    "4": 0.125,
+    "5": 0.125,
+    "6": 0.125,
+    "7": 0.125,
+    "8": 0.125
+  },
+  "expertWeightsRule": {
+    "1": 0.8,
+    "2": 0.2
+  },
+  "experts": [
+    {
+      "expertName": "experts from WCH",
+      "expertID": "expert1",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    },
+    {
+      "expertName": "professors from universities",
+      "expertID": "expert2",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    },
+    {
+      "expertName": "waste management experts",
+      "expertID": "expert3",
+      "competencies": [
+        "economy",
+        "politics"
+      ]
+    }
+  ],
+  "alternativesOrdered": [
+    {
+      "alternativeID": "alternative1",
+      "estimation": [
+        {
+          "m": 0.25
+        }
+      ],
+      "scaleID": "Scale_Five"
+    }
+  ]
+}

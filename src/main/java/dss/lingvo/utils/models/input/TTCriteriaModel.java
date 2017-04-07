@@ -1,4 +1,4 @@
-package dss.lingvo.utils.models;
+package dss.lingvo.utils.models.input;
 
 public class TTCriteriaModel {
     private String criteriaID;

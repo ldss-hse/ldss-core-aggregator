@@ -1,7 +1,7 @@
 package dss.lingvo.t2;
 
 import dss.lingvo.hflts.TTHFLTSScale;
-import dss.lingvo.utils.models.TTScaleModel;
+import dss.lingvo.utils.models.input.TTScaleModel;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,10 @@ public class TTNormalizedTranslator {
 
     public static void setScaleStore(Map<Integer, TTHFLTSScale> scaleStore) {
         TTNormalizedTranslator.scaleStore = scaleStore;
+    }
+
+    public static Map<Integer, TTHFLTSScale> getScaleStore() {
+        return scaleStore;
     }
 
     public TTTuple translateTo2Tuple(float translation, int targetScaleSize) {

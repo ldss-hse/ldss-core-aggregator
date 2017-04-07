@@ -1,4 +1,4 @@
-package dss.lingvo.utils.models;
+package dss.lingvo.utils.models.input;
 
 import java.util.List;
 

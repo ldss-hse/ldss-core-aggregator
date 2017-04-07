@@ -1,11 +1,11 @@
-package dss.lingvo.utils.models;
+package dss.lingvo.utils.models.input;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 import java.util.Map;
 
-public class TTJSONModel {
+public class TTJSONInputModel {
     private List<TTCriteriaModel> criteria;
     private List<TTAlternativeModel> alternatives;
     private List<TTScaleModel> scales;
@@ -13,6 +13,10 @@ public class TTJSONModel {
     private List<TTExpertModel> experts;
     @JsonProperty("estimations")
     private Map<String, List<TTExpertEstimationsModel>> estimations;
+    @JsonProperty("abstractionLevelWeights")
+    private Map<String, Float> abstractionLevelWeights;
+    @JsonProperty("expertWeightsRule")
+    private Map<String, Float> expertWeightsRule;
 
     public List<TTCriteriaModel> getCriteria() {
         return criteria;
@@ -60,5 +64,21 @@ public class TTJSONModel {
 
     public void setEstimations(Map<String,  List<TTExpertEstimationsModel>> estimations) {
         this.estimations = estimations;
+    }
+
+    public Map<String, Float> getAbstractionLevelWeights() {
+        return abstractionLevelWeights;
+    }
+
+    public void setAbstractionLevelWeights(Map<String, Float> abstractionLevelWeights) {
+        this.abstractionLevelWeights = abstractionLevelWeights;
+    }
+
+    public Map<String, Float> getExpertWeightsRule() {
+        return expertWeightsRule;
+    }
+
+    public void setExpertWeightsRule(Map<String, Float> expertWeightsRule) {
+        this.expertWeightsRule = expertWeightsRule;
     }
 }

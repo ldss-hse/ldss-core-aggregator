@@ -4,10 +4,10 @@ import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
-import dss.lingvo.utils.models.TTCriteriaEstimationsModel;
-import dss.lingvo.utils.models.TTExpertEstimationsModel;
-import dss.lingvo.utils.models.TTJSONModel;
-import dss.lingvo.utils.models.TTScaleModel;
+import dss.lingvo.utils.models.input.*;
+import dss.lingvo.utils.models.output.TTAlternativeEstimationModel;
+import dss.lingvo.utils.models.output.TTEstimationModel;
+import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.util.*;
 
@@ -79,7 +79,7 @@ public class TTUtils {
         public float compute(int i, float[] wVec, float x);
     }
 
-    public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromJSONModel(TTJSONModel ttjsonModel) {
+    public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromJSONModel(TTJSONInputModel ttjsonModel) {
         Map<String, List<TTExpertEstimationsModel>> fileEstimations = ttjsonModel.getEstimations();
 
         String integerRegex = "[\\D]";
@@ -145,5 +145,58 @@ public class TTUtils {
             aggEstAll.add(aggregatedForSingle);
         }
         return aggEstAll;
+    }
+
+    private static List<TTAlternativeEstimationModel> prepareJSONForAggregationEstimates(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize){
+        // now just to sort
+        List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
+
+        List<TTAlternativeEstimationModel> tmpModel = new ArrayList<>();
+
+        // 4 1 2 3 5
+        for (TT2HFLTS sortedAlt: sortedAltOverall) {
+            List<Map<String, Float>> estimates = new ArrayList<>();
+            for (TTTuple res : sortedAlt.getTerms()){
+                Map<String, Float> tmp = new HashMap<>();
+                tmp.put(res.getLabel(),res.getTranslation());
+                estimates.add(tmp);
+            }
+
+            TTAlternativeEstimationModel tmp = new TTAlternativeEstimationModel();
+
+            tmp.setEstimation(estimates);
+
+            TTScaleModel resScale = ttjsonModel.getScales()
+                    .stream()
+                    .filter(x -> x.getLabels().size() == targetScaleSize)
+                    .findFirst()
+                    .orElse(null);
+
+            if(resScale == null){
+                return tmpModel;
+            }
+
+            tmp.setScaleID(resScale.getScaleID());
+
+            int originalIndex = altOverall.indexOf(sortedAlt);
+            TTAlternativeModel resAlt  = ttjsonModel.getAlternatives().get(originalIndex);
+
+            tmp.setAlternativeID(resAlt.getAlternativeID());
+            tmpModel.add(tmp);
+        }
+        return tmpModel;
+    }
+
+    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize){
+        TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
+        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
+        ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());
+        ttjsonOutputModel.setScales(ttjsonModel.getScales());
+        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
+        ttjsonOutputModel.setAbstractionLevelWeights(ttjsonModel.getAbstractionLevelWeights());
+        ttjsonOutputModel.setExpertWeightsRule(ttjsonModel.getExpertWeightsRule());
+        ttjsonOutputModel.setExperts(ttjsonModel.getExperts());
+        ttjsonOutputModel.setAlternativesOrdered(TTUtils.prepareJSONForAggregationEstimates(altOverall, ttjsonModel, targetScaleSize));
+        return ttjsonOutputModel;
     }
 }

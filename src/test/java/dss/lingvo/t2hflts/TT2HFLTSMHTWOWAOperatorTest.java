@@ -1,18 +1,13 @@
 package dss.lingvo.t2hflts;
 
-import dss.lingvo.hflts.TTHFLTSScale;
-import dss.lingvo.t2.TTNormalizedTranslator;
-import dss.lingvo.t2.TTTuple;
-import dss.lingvo.utils.TTJSONReader;
+import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
-import dss.lingvo.utils.models.TTJSONModel;
+import dss.lingvo.utils.models.input.TTJSONInputModel;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -27,10 +22,10 @@ public class TT2HFLTSMHTWOWAOperatorTest {
 
     @BeforeClass
     public static void runOnceBeforeClass() {
-        TTJSONReader ttjsonReader = TTJSONReader.getInstance();
-        TTJSONModel ttjsonModel = null;
+        TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
+        TTJSONInputModel ttjsonModel = null;
         try {
-            ttjsonModel = ttjsonReader.readJSONDescription("description.json");
+            ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
