@@ -1,6 +1,7 @@
 package dss.lingvo.t2hflts;
 
 import dss.lingvo.t2.TTNormalizedTranslator;
+import dss.lingvo.t2.TTTuple;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
 import dss.lingvo.utils.models.input.TTJSONInputModel;
@@ -50,8 +51,18 @@ public class TT2HFLTSCoordinator {
         List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(numAlternatives,
                 numExperts, p, w, aggEstAll, 7);
 
-       TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altOverall, ttjsonModel, 7);
+        TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altOverall, ttjsonModel, 7);
         // now output results
         TTJSONUtils.getInstance().writeResultToJSON("build/resources/result.json", res);
+
+        // now how to work with numbers
+        float estimation = 0.78f;
+        int targetScaleSize = 7;
+
+        List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(0.78f, 5);
+        float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
+        TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, 5);
+        System.out.println(resTuple);
+
     }
 }
