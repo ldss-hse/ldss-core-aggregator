@@ -199,4 +199,42 @@ public class TTUtils {
         ttjsonOutputModel.setAlternativesOrdered(TTUtils.prepareJSONForAggregationEstimates(altOverall, ttjsonModel, targetScaleSize));
         return ttjsonOutputModel;
     }
+
+    /**
+     * When calculating weights for the experts, we introduce a new formula
+     * E.g. distribution is [0.8, 0.2] and we have 3 experts.
+     * That means that the first expert takes the 0.8 weight
+     * The second expert - 0.8 * remaining part - 0.8*(1-0.8)
+     * And so fourth until the last, that gets all remaining: 1 - weights_of_other_experts
+     * @param distribution - array of weights distribution
+     * @param numExperts - number of experts
+     * @return vector of weights
+     */
+    public static float[] calculateWeightsVector(float[] distribution, int numExperts){
+        float [] res = new float[numExperts];
+        for (int i = 0; i < numExperts; i++){
+            res[i] = calculateWeight(distribution[0], i, numExperts);
+        }
+        return res;
+    }
+
+    private static float calculateWeight(float firstWeight, int currentExpertNumber, int totalExpertsNumber){
+        if (currentExpertNumber == 0){
+            return firstWeight;
+        } else if (currentExpertNumber == totalExpertsNumber-1){
+            float acc = calculatePredessorsWeightsSum(firstWeight, currentExpertNumber, totalExpertsNumber);
+            return 1 - acc;
+        } else {
+            float acc = calculatePredessorsWeightsSum(firstWeight, currentExpertNumber, totalExpertsNumber);
+            return (1 - acc)*firstWeight;
+        }
+    }
+
+    private static float calculatePredessorsWeightsSum(float firstWeight, int currentExpertNumber, int totalExpertsNumber){
+        float acc = 0f;
+        for (int i = 0; i < currentExpertNumber; i++){
+            acc += calculateWeight(firstWeight, i, totalExpertsNumber);
+        }
+        return acc;
+    }
 }

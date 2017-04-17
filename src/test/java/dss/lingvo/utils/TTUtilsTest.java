@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -160,7 +161,6 @@ public class TTUtilsTest {
         assertEquals(expectedSet, res);
     }
 
-
     @Test
     public void testSortTT2HFLTS3() throws Exception {
         ArrayList<TTTuple> est1 = new ArrayList<>();
@@ -196,5 +196,20 @@ public class TTUtilsTest {
         expectedSet.add(spy2);
 
         assertEquals(expectedSet, res);
+    }
+
+    @Test
+    public void testWeightsDistribution() throws Exception {
+        float[] expDistr = {0.8f, 0.2f};
+        float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
+        float[] expV = {0.8f, 0.16f, 0.03199997f, 0.008000016f};
+        float sum = 0f;
+        for (int i = 0; i < resVector.length; i++) {
+            sum += resVector[i];
+        }
+
+        assertEquals(resVector.length, 4);
+        assertTrue(Arrays.equals(expV, resVector));
+        assertEquals(1, sum, TTConstants.FLOAT_PRECISION_DELTA);
     }
 }

@@ -64,5 +64,15 @@ public class TT2HFLTSCoordinator {
         TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, 5);
         System.out.println(resTuple);
 
+        float[] expDistr = {0.8f, 0.2f};
+        float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
+        System.out.println(resVector);
+
+        float sum = 0f;
+        for (int i = 0; i < resVector.length; i++){
+            sum += resVector[i];
+        }
+        System.out.println(sum);
+
     }
 }
