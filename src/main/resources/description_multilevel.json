@@ -1,46 +1,277 @@
 {
-  "criteria": [
-    {
-      "criteriaID": "criterion1",
-      "criteriaName": "costs",
-      "qualitative": false
-    },
-    {
-      "criteriaID": "criterion2",
-      "criteriaName": "environmental reservation",
-      "qualitative": false
-    },
-    {
-      "criteriaID": "criterion3",
-      "criteriaName": "technical reliability",
-      "qualitative": false
-    }
-  ],
+  "criteria": {
+    "management": [
+      {
+        "criteriaID": "С.МУА.1",
+        "criteriaName": "Гибкость",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.МУА.2",
+        "criteriaName": "Степень эффективности рабочих",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.МУА.3",
+        "criteriaName": "Уровень брака",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.МУА.4",
+        "criteriaName": "Стратегические перспективность",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.МУА.5",
+        "criteriaName": "Устойчивость развития",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.МУА.6",
+        "criteriaName": "Количество рабочих",
+        "qualitative": false
+      }
+    ],
+    "economics": [
+      {
+        "criteriaID": "С.ЭКУА.1",
+        "criteriaName": "Прибыль",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.ЭКУА.2",
+        "criteriaName": "EBIT",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.ЭКУА.3",
+        "criteriaName": "Размер выплат акционерам",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.ЭКУА.4",
+        "criteriaName": "Размер выплаченных налогов",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.ЭКУА.5",
+        "criteriaName": "Затраты на единицу продукции",
+        "qualitative": false
+      },
+      {
+        "criteriaID": "С.ЭКУА.6",
+        "criteriaName": "Скорость падения качества",
+        "qualitative": true
+      }
+    ],
+    "science": [
+      {
+        "criteriaID": "С.НУА.1",
+        "criteriaName": "Уровень соответствия экологическим стандартам",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.НУА.2",
+        "criteriaName": "Уровень загрязнения по воде",
+        "qualitative": false
+      }
+    ],
+    "law": [
+      {
+        "criteriaID": "С.ЮУА.1",
+        "criteriaName": "Простота юридической системы",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ЮУА.2",
+        "criteriaName": "Количество правонарушений",
+        "qualitative": false
+      }
+    ],
+    "politics": [
+      {
+        "criteriaID": "С.ПУА.1",
+        "criteriaName": "Степень напряженности политической",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ПУА.2",
+        "criteriaName": "Вероятность того, что приведет к агрессии",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ПУА.3",
+        "criteriaName": "Вероятность возникно вения критики от поли тического движения",
+        "qualitative": true
+      }
+    ],
+    "epistemology": [
+      {
+        "criteriaID": "С.ЭПУА.1",
+        "criteriaName": "Уровень соответствия принципам SCOR",
+        "qualitative": true
+      }
+    ],
+    "ethics": [
+      {
+        "criteriaID": "С.ЭТУА.1",
+        "criteriaName": "Удовлетворение рабочих",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ЭТУА.2",
+        "criteriaName": "Справедливость с точки зрения рабочих",
+        "qualitative": true
+      }
+    ],
+    "aesthetics": [
+      {
+        "criteriaID": "С.ЭСТУА.1",
+        "criteriaName": "Вкус продукции",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ЭСТУА.2",
+        "criteriaName": "Свежесть продукции",
+        "qualitative": true
+      },
+      {
+        "criteriaID": "С.ЭСТУА.3",
+        "criteriaName": "Наслаждение от ландшафта",
+        "qualitative": true
+      }
+    ]
+  },
   "alternatives": [
     {
-      "alternativeID": "alternative1",
-      "alternativeName": "Incineration",
-      "abstractionLevelID": 3
+      "alternativeID": "A.МУА.1",
+      "alternativeName": "Использовать технологии автоматизации в процесс помола риса",
+      "abstractionLevelID": "management"
     },
     {
-      "alternativeID": "alternative2",
-      "alternativeName": "Landfill disposal",
-      "abstractionLevelID": 3
+      "alternativeID": "A.МУА.2",
+      "alternativeName": "Создать программу по устойчивому развитию региона на ближайшие 5 лет",
+      "abstractionLevelID": "management"
     },
     {
-      "alternativeID": "alternative3",
-      "alternativeName": "Steam sterilization",
-      "abstractionLevelID": 3
+      "alternativeID": "A.МУА.3",
+      "alternativeName": "Внедрить нанотехнологии в процесс выращивания риса",
+      "abstractionLevelID": "management"
     },
     {
-      "alternativeID": "alternative4",
-      "alternativeName": "Microwave",
-      "abstractionLevelID": 3
+      "alternativeID": "A.ЭКУА.1",
+      "alternativeName": "Увеличивать дотации для фермеров",
+      "abstractionLevelID": "economics"
     },
     {
-      "alternativeID": "alternative5",
-      "alternativeName": "Electrochemical technologies",
-      "abstractionLevelID": 3
+      "alternativeID": "A.ЭКУА.2",
+      "alternativeName": "Увеличивать налоги для фермеров",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.ЭКУА.3",
+      "alternativeName": "Заморозить уровень брака на уровне 2015 года",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.ЭКУА.4",
+      "alternativeName": "Начать экспорт в страны Америки",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.ЭКУА.5",
+      "alternativeName": "Начать экспорт в страны Азии",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.ЭКУА.6",
+      "alternativeName": "Снизить скорость порчи продукции за счет посева гибридных сортов риса",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.ЭКУА.7",
+      "alternativeName": "Увеличить урожай за счет внедрения системы орошения",
+      "abstractionLevelID": "economics"
+    },
+    {
+      "alternativeID": "A.НУА.1",
+      "alternativeName": "Уменьшать выбросы через сокращение объемов производимой продукции для уменьшения выбросов",
+      "abstractionLevelID": "science"
+    },
+    {
+      "alternativeID": "A.НУА.2",
+      "alternativeName": "Уменьшать выбросы через введение монополии государства на перевозки",
+      "abstractionLevelID": "science"
+    },
+    {
+      "alternativeID": "A.НУА.3",
+      "alternativeName": "Уменьшить уровень использования удобрений",
+      "abstractionLevelID": "science"
+    },
+    {
+      "alternativeID": "A.НУА.4",
+      "alternativeName": "Использовать только экологически чистые удобрения",
+      "abstractionLevelID": "science"
+    },
+    {
+      "alternativeID": "A.ЮУА.1",
+      "alternativeName": "Согласовать законодательную базу Индии по экспорту с законодательством других стран",
+      "abstractionLevelID": "law"
+    },
+    {
+      "alternativeID": "A.ЮУА.2",
+      "alternativeName": "Усилить контроль за перевозками падди через внедрение автоматизированной системы",
+      "abstractionLevelID": "law"
+    },
+    {
+      "alternativeID": "A.ЮУА.3",
+      "alternativeName": "Ввести Антимонопольное соглашение, запрещающее сговор между мельниками",
+      "abstractionLevelID": "law"
+    },
+    {
+      "alternativeID": "A.ПУА.1",
+      "alternativeName": "Создать политического медиатора в виде государства",
+      "abstractionLevelID": "politics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.1",
+      "alternativeName": "Увеличить дотации фермерам",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.2",
+      "alternativeName": "Улучшить условия труда за счет сокращение рабочего дня",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.3",
+      "alternativeName": "Отдать управление отраслью в частный сектор и не помогать неимущим",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.4",
+      "alternativeName": "Помогать неимущим (оставить на том же уровне)",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.5",
+      "alternativeName": "Выстроить процессы цепи поставок в соответствии со SCOR",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭТУА.6",
+      "alternativeName": "Увеличить поддержку неимущих",
+      "abstractionLevelID": "ethics"
+    },
+    {
+      "alternativeID": "A.ЭСТУА.1",
+      "alternativeName": "Периодически менять локацию угодий по производству риса",
+      "abstractionLevelID": "aesthetics"
+    },
+    {
+      "alternativeID": "A.ЭСТУА.2",
+      "alternativeName": "Улучшить вкус продукции за счет посева гибридных сортов риса",
+      "abstractionLevelID": "aesthetics"
     }
   ],
   "scales": [
@@ -95,23 +326,51 @@
   ],
   "abstractionLevels": [
     {
-      "abstractionLevelID": 3,
+      "abstractionLevelID": "management",
+      "abstractionLevelName": "Management"
+    },
+    {
+      "abstractionLevelID": "economics",
+      "abstractionLevelName": "Economics"
+    },
+    {
+      "abstractionLevelID": "science",
+      "abstractionLevelName": "Science"
+    },
+    {
+      "abstractionLevelID": "law",
+      "abstractionLevelName": "Law"
+    },
+    {
+      "abstractionLevelID": "politics",
       "abstractionLevelName": "Politics"
+    },
+    {
+      "abstractionLevelID": "epistemology",
+      "abstractionLevelName": "Epistemology"
+    },
+    {
+      "abstractionLevelID": "ethics",
+      "abstractionLevelName": "Ethics"
+    },
+    {
+      "abstractionLevelID": "aesthetics",
+      "abstractionLevelName": "Aesthetics"
     }
   ],
   "abstractionLevelWeights": {
-    "1":0.125,
-    "2":0.125,
-    "3":0.125,
-    "4":0.125,
-    "5":0.125,
-    "6":0.125,
-    "7":0.125,
-    "8":0.125
+    "1": 0.125,
+    "2": 0.125,
+    "3": 0.125,
+    "4": 0.125,
+    "5": 0.125,
+    "6": 0.125,
+    "7": 0.125,
+    "8": 0.125
   },
   "expertWeightsRule": {
-    "1":0.8,
-    "2":0.2
+    "1": 0.8,
+    "2": 0.2
   },
   "experts": [
     {
