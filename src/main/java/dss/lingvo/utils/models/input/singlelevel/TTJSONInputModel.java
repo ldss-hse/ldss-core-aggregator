@@ -1,6 +1,7 @@
-package dss.lingvo.utils.models.input;
+package dss.lingvo.utils.models.input.singlelevel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dss.lingvo.utils.models.input.*;
 
 import java.util.List;
 import java.util.Map;

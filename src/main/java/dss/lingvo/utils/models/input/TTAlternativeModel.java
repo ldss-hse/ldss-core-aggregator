@@ -3,7 +3,7 @@ package dss.lingvo.utils.models.input;
 public class TTAlternativeModel {
     private String alternativeID;
     private String alternativeName;
-    private boolean abstractionLevelID;
+    private String abstractionLevelID;
 
     public String getAlternativeID() {
         return alternativeID;
@@ -21,11 +21,11 @@ public class TTAlternativeModel {
         this.alternativeName = alternativeName;
     }
 
-    public boolean isAbstractionLevelID() {
+    public String getAbstractionLevelID() {
         return abstractionLevelID;
     }
 
-    public void setAbstractionLevelID(boolean abstractionLevelID) {
+    public void setAbstractionLevelID(String abstractionLevelID) {
         this.abstractionLevelID = abstractionLevelID;
     }
 }

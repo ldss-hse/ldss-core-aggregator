@@ -2,7 +2,7 @@ package dss.lingvo.t2hflts;
 
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
-import dss.lingvo.utils.models.input.TTJSONInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

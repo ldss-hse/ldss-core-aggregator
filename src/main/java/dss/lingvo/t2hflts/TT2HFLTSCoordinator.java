@@ -2,9 +2,11 @@ package dss.lingvo.t2hflts;
 
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
+import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
-import dss.lingvo.utils.models.input.TTJSONInputModel;
+import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.io.IOException;
@@ -15,8 +17,7 @@ public class TT2HFLTSCoordinator {
 
     public void go() throws IOException {
         TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
-        TTJSONInputModel ttjsonModel = null;
-        ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
+        TTJSONInputModel ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
 
         if (ttjsonModel == null) {
             return;
@@ -74,5 +75,18 @@ public class TT2HFLTSCoordinator {
         }
         System.out.println(sum);
 
+        //---------------------
+        // Enable multilevel task solving
+
+
+        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
+        System.out.println(model);
+
+
+        // Step 1. Aggregate by abstraction level
+        TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize);
+        System.out.println(allByLevel);
     }
 }

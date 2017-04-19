@@ -37,14 +37,14 @@ scales = {
 }
 
 criteria = {
-    "МУА": ["С.МУА.1", "С.МУА.2", "С.МУА.3", "С.МУА.4", "С.МУА.5", "С.МУА.6"],
-    "ЭКУА": ["С.ЭКУА.1", "С.ЭКУА.2", "С.ЭКУА.3", "С.ЭКУА.4", "С.ЭКУА.5", "С.ЭКУА.6"],
-    "НУА": ["С.НУА.1", "С.НУА.2"],
-    "ЮУА": ["С.ЮУА.1", "С.ЮУА.2"],
-    "ПУА": ["С.ПУА.1", "С.ПУА.2", "С.ПУА.1"],
-    "ЭПУА": ["С.ЭПУА.1"],
-    "ЭТУА": ["С.ЭТУА.1", "С.ЭТУА.2"],
-    "ЭСТУА": ["С.ЭСТУА.1", "С.ЭСТУА.2", "С.ЭСТУА.1"]
+    "МУА": ["К.МУА.1", "К.МУА.2", "К.МУА.3", "К.МУА.4", "К.МУА.5", "К.МУА.6"],
+    "ЭКУА": ["К.ЭКУА.1", "К.ЭКУА.2", "К.ЭКУА.3", "К.ЭКУА.4", "К.ЭКУА.5", "К.ЭКУА.6"],
+    "НУА": ["К.НУА.1", "К.НУА.2"],
+    "ЮУА": ["К.ЮУА.1", "К.ЮУА.2"],
+    "ПУА": ["К.ПУА.1", "К.ПУА.2", "К.ПУА.3"],
+    "ЭПУА": ["К.ЭПУА.1"],
+    "ЭТУА": ["К.ЭТУА.1", "К.ЭТУА.2"],
+    "ЭСТУА": ["К.ЭСТУА.1", "К.ЭСТУА.2", "К.ЭСТУА.3"]
 }
 
 scalesID = {
@@ -72,13 +72,13 @@ def alternative_est_to_json(alt_name, alt_est_list):
 
 def estimate_to_json(criteria_name, estimation):
     scale_str = ""
-    if estimation['isQualitative']:
+    if estimation['qualitative']:
         qualitative = "true"
         scale_id = scalesID[estimation['scaleSize']]
         scale_str = '"scaleID":"{}",'.format(scale_id)
     else:
         qualitative = "false"
-    return '{{"criteriaID":"{}", "estimation":["{}"], {} "isQualitative":{}}}'.format(criteria_name,
+    return '{{"criteriaID":"{}", "estimation":["{}"], {} "qualitative":{}}}'.format(criteria_name,
                                                                                       estimation['value'],
                                                                                       scale_str,
                                                                                      qualitative)
@@ -108,7 +108,7 @@ def read_expert_estimations(file_name):
                         label_position = int(numbers[0]) - 1
                         scale_size = numbers[1]
                         tmp = scales[str(scale_size)][label_position]
-                    final_dic[alt_name][criteria[current_level][i]] = {"isQualitative": isQualitative,
+                    final_dic[alt_name][criteria[current_level][i]] = {"qualitative": isQualitative,
                                                                                "value": tmp, "scaleSize": scale_size}
     return final_dic
 
