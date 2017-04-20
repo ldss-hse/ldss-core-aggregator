@@ -2,13 +2,11 @@ package dss.lingvo.t2hflts.multilevel;
 
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
-import dss.lingvo.t2hflts.TT2HFLTSMTWAOperator;
 import dss.lingvo.utils.TTUtils;
 import dss.lingvo.utils.models.input.TTAbstractionLevelModel;
 import dss.lingvo.utils.models.input.TTCriteriaModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -44,10 +42,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
                         tmp.add(singleAltEst.get(i));
                     }
                     // weights are currently equal
-                    float[] weights = new float[tmp.size()];
-                    for (int i = 0; i < tmp.size(); i++) {
-                        weights[i] = 1f / tmp.size();
-                    }
+                    float[] weights = getEqualWeights(tmp.size());
                     TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(tmp, weights, targetScaleSize);
                     levelEstimates.add(aggRes);
                 }
@@ -56,5 +51,82 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
             expEstimates.add(altEstimates);
         }
         return expEstimates;
+    }
+
+    public List<ArrayList<TT2HFLTS>> aggregateByExpert(int levelsSize,
+                                                       int altSize,
+                                                       int targetScaleSize,
+                                                       List<ArrayList<ArrayList<TT2HFLTS>>> all) {
+        TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
+        List<ArrayList<TT2HFLTS>> levelEstimates = new ArrayList<>();
+
+        //initialize the matrix
+        IntStream.range(0, altSize).forEach((i) -> {
+            ArrayList<TT2HFLTS> levelEst = new ArrayList<>();
+            IntStream.range(0, levelsSize).forEach((j) -> {
+                levelEst.add(null);
+            });
+            levelEstimates.add(levelEst);
+        });
+
+        // fill matrix
+        for (int levelIndex = 0; levelIndex < levelsSize; levelIndex++) {
+            for (int altIndex = 0; altIndex < altSize; altIndex++) {
+                // weights are currently equal
+                float[] weights = getEqualWeights(all.get(levelIndex).get(altIndex).size());
+                TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(all.get(levelIndex).get(altIndex), weights, targetScaleSize);
+                levelEstimates.get(altIndex).set(levelIndex, aggRes);
+            }
+        }
+        return levelEstimates;
+    }
+
+    public List<TT2HFLTS> aggregateFinalAltEst(int targetScaleSize, List<ArrayList<TT2HFLTS>> all) {
+        TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
+        List<TT2HFLTS> altEstimates = new ArrayList<>();
+
+        // fill matrix
+        for (ArrayList<TT2HFLTS> levelEstimates: all) {
+                // weights are currently equal
+                float[] weights = getEqualWeights(levelEstimates.size());
+                TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(levelEstimates, weights, targetScaleSize);
+            altEstimates.add(aggRes);
+        }
+        return altEstimates;
+    }
+
+    public List<ArrayList<ArrayList<TT2HFLTS>>> transposeByAbstractionLevel(int levelsSize, int altSize, int expertsSize,
+                                                                            List<ArrayList<ArrayList<TT2HFLTS>>> estGroupedByAlternatives) {
+        // init the matrixes
+        List<ArrayList<ArrayList<TT2HFLTS>>> levelEstimates = new ArrayList<>();
+        IntStream.range(0, levelsSize).forEach((i) -> {
+            ArrayList<ArrayList<TT2HFLTS>> levelEst = new ArrayList<>();
+            IntStream.range(0, altSize).forEach((j) -> {
+                ArrayList<TT2HFLTS> altEst = new ArrayList<>();
+                IntStream.range(0, expertsSize).forEach((k) -> altEst.add(null));
+                levelEst.add(altEst);
+            });
+            levelEstimates.add(levelEst);
+        });
+
+        // fill matrixes
+        for (int expertIndex = 0; expertIndex < expertsSize; expertIndex++) {
+            for (int altIndex = 0; altIndex <altSize; altIndex++) {
+                for (int levelIndex = 0; levelIndex < levelsSize; levelIndex++) {
+                    TT2HFLTS est = estGroupedByAlternatives.get(expertIndex).get(altIndex).get(expertIndex);
+                    levelEstimates.get(levelIndex).get(altIndex).set(expertIndex, est);
+                }
+            }
+        }
+        return levelEstimates;
+    }
+
+    private float[] getEqualWeights(int size){
+        // weights are currently equal
+        float[] weights = new float[size];
+        for (int i = 0; i < size; i++) {
+            weights[i] = 1f / size;
+        }
+        return weights;
     }
 }

@@ -5,6 +5,7 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
+import dss.lingvo.utils.models.input.TTAlternativeModel;
 import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
 import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
@@ -70,7 +71,7 @@ public class TT2HFLTSCoordinator {
         System.out.println(resVector);
 
         float sum = 0f;
-        for (int i = 0; i < resVector.length; i++){
+        for (int i = 0; i < resVector.length; i++) {
             sum += resVector[i];
         }
         System.out.println(sum);
@@ -86,7 +87,43 @@ public class TT2HFLTSCoordinator {
 
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize);
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateByAbstractionLevel(model.getCriteria(),
+                        model.getAbstractionLevels(),
+                        all,
+                        targetScaleSize);
         System.out.println(allByLevel);
+
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
+                .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
+                        model.getAlternatives().size(),
+                        model.getExperts().size(),
+                        allByLevel);
+        System.out.println(allByExpert);
+
+        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateByExpert(model.getAbstractionLevels().size(),
+                        model.getAlternatives().size(),
+                        7,
+                        allByExpert);
+        System.out.println(altToLevel);
+
+        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateFinalAltEst(7,
+                        altToLevel);
+        System.out.println(altVec);
+
+        List<TT2HFLTS> sortedVec = TTUtils.sortTT2HFLTS(altVec, true);
+        for (TT2HFLTS el: sortedVec){
+            int originalIndex = 0;
+            for (int i = 0; i < altVec.size(); i++){
+                if (altVec.get(i).equals(el)){
+                    originalIndex = i;
+                    break;
+                }
+            }
+            TTAlternativeModel ttAlternativeModel = model.getAlternatives().get(originalIndex);
+            System.out.println(originalIndex+". <"+ttAlternativeModel.getAlternativeID()+"> " + ttAlternativeModel.getAlternativeName());
+        }
     }
 }
