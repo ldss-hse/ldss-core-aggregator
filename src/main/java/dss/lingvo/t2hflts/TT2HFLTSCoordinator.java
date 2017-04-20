@@ -3,6 +3,7 @@ package dss.lingvo.t2hflts;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
+import dss.lingvo.utils.TTConstants;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
 import dss.lingvo.utils.models.input.TTAlternativeModel;
@@ -101,11 +102,21 @@ public class TT2HFLTSCoordinator {
                         allByLevel);
         System.out.println(allByExpert);
 
+        float[] a = new float[model.getExpertWeightsRule().values().size()];
+        float curMax = 0f;
+        for (Map.Entry<String, Float> e: model.getExpertWeightsRule().entrySet()){
+            if (Math.abs(curMax-e.getValue())< TTConstants.FLOAT_PRECISION_DELTA){
+                curMax = e.getValue();
+            }
+        }
+        a[0] = curMax;
+        a[1] = 1-curMax;
         List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator
                 .aggregateByExpert(model.getAbstractionLevels().size(),
                         model.getAlternatives().size(),
                         7,
-                        allByExpert);
+                        allByExpert,
+                        a);
         System.out.println(altToLevel);
 
         List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator

@@ -56,7 +56,8 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
     public List<ArrayList<TT2HFLTS>> aggregateByExpert(int levelsSize,
                                                        int altSize,
                                                        int targetScaleSize,
-                                                       List<ArrayList<ArrayList<TT2HFLTS>>> all) {
+                                                       List<ArrayList<ArrayList<TT2HFLTS>>> all,
+                                                       float[] distribution) {
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
         List<ArrayList<TT2HFLTS>> levelEstimates = new ArrayList<>();
 
@@ -72,9 +73,9 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
         // fill matrix
         for (int levelIndex = 0; levelIndex < levelsSize; levelIndex++) {
             for (int altIndex = 0; altIndex < altSize; altIndex++) {
-                // weights are currently equal
-                float[] weights = getEqualWeights(all.get(levelIndex).get(altIndex).size());
-                TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(all.get(levelIndex).get(altIndex), weights, targetScaleSize);
+                float[] weights = TTUtils.calculateWeightsVector(distribution, all.get(levelIndex).get(altIndex).size());
+                List<TT2HFLTS> newSet = TTUtils.sortTT2HFLTS(all.get(levelIndex).get(altIndex), true);
+                TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(newSet, weights, targetScaleSize);
                 levelEstimates.get(altIndex).set(levelIndex, aggRes);
             }
         }
