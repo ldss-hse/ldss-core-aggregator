@@ -1,12 +1,14 @@
 package dss.lingvo.utils;
 
+import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
 import dss.lingvo.utils.models.input.*;
+import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTAlternativeEstimationModel;
-import dss.lingvo.utils.models.output.TTEstimationModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.util.*;
@@ -112,24 +114,29 @@ public class TTUtils {
                 ArrayList<TT2HFLTS> expToAltToCrit = new ArrayList<>();
                 // loop though sorted by criteria
                 for (TTCriteriaEstimationsModel criterion : model.getCriteria2Estimation()) {
-                    List<String> val = criterion.getEstimation();
-                    ArrayList<TTTuple> expToAltToCritTTuple = new ArrayList<>();
-                    TTScaleModel scale = ttjsonModel.getScales()
-                            .stream()
-                            .filter(x -> x.getScaleID().equals(criterion.getScaleID()))
-                            .findFirst()
-                            .orElse(null);
-                    int scaleSize = scale.getLabels().size();
-                    for (String label : val) {
-                        expToAltToCritTTuple.add(new TTTuple(label, scaleSize, 0, scale.getLabels().indexOf(label)));
-                    }
-                    expToAltToCrit.add(new TT2HFLTS(expToAltToCritTTuple));
+                    expToAltToCrit.add(transformToTTHFLTS(ttjsonModel.getScales(),
+                            criterion.getScaleID(),
+                            criterion.getEstimation()));
                 }
                 expAll.add(expToAltToCrit);
             }
             expEstimationsAll.add(expAll);
         }
         return expEstimationsAll;
+    }
+
+    private static TT2HFLTS transformToTTHFLTS(List<TTScaleModel> scales, String scaleID, List<String> estimation) {
+        ArrayList<TTTuple> expToAltToCritTTuple = new ArrayList<>();
+        TTScaleModel scale = scales
+                .stream()
+                .filter(x -> x.getScaleID().equals(scaleID))
+                .findFirst()
+                .orElse(null);
+        int scaleSize = scale.getLabels().size();
+        for (String label : estimation) {
+            expToAltToCritTTuple.add(new TTTuple(label, scaleSize, 0, scale.getLabels().indexOf(label)));
+        }
+        return new TT2HFLTS(expToAltToCritTTuple);
     }
 
     public static List<ArrayList<TT2HFLTS>> aggregateIndividualEstimations(List<ArrayList<ArrayList<TT2HFLTS>>> expEstimationsAll, float[] criteriaWeights) {
@@ -147,18 +154,18 @@ public class TTUtils {
         return aggEstAll;
     }
 
-    private static List<TTAlternativeEstimationModel> prepareJSONForAggregationEstimates(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize){
+    private static List<TTAlternativeEstimationModel> prepareJSONForAggregationEstimates(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize) {
         // now just to sort
         List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
 
         List<TTAlternativeEstimationModel> tmpModel = new ArrayList<>();
 
         // 4 1 2 3 5
-        for (TT2HFLTS sortedAlt: sortedAltOverall) {
+        for (TT2HFLTS sortedAlt : sortedAltOverall) {
             List<Map<String, Float>> estimates = new ArrayList<>();
-            for (TTTuple res : sortedAlt.getTerms()){
+            for (TTTuple res : sortedAlt.getTerms()) {
                 Map<String, Float> tmp = new HashMap<>();
-                tmp.put(res.getLabel(),res.getTranslation());
+                tmp.put(res.getLabel(), res.getTranslation());
                 estimates.add(tmp);
             }
 
@@ -172,14 +179,14 @@ public class TTUtils {
                     .findFirst()
                     .orElse(null);
 
-            if(resScale == null){
+            if (resScale == null) {
                 return tmpModel;
             }
 
             tmp.setScaleID(resScale.getScaleID());
 
             int originalIndex = altOverall.indexOf(sortedAlt);
-            TTAlternativeModel resAlt  = ttjsonModel.getAlternatives().get(originalIndex);
+            TTAlternativeModel resAlt = ttjsonModel.getAlternatives().get(originalIndex);
 
             tmp.setAlternativeID(resAlt.getAlternativeID());
             tmpModel.add(tmp);
@@ -187,7 +194,7 @@ public class TTUtils {
         return tmpModel;
     }
 
-    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize){
+    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize) {
         TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
         ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
         ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());
@@ -206,35 +213,123 @@ public class TTUtils {
      * That means that the first expert takes the 0.8 weight
      * The second expert - 0.8 * remaining part - 0.8*(1-0.8)
      * And so fourth until the last, that gets all remaining: 1 - weights_of_other_experts
+     *
      * @param distribution - array of weights distribution
-     * @param numExperts - number of experts
+     * @param numExperts   - number of experts
      * @return vector of weights
      */
-    public static float[] calculateWeightsVector(float[] distribution, int numExperts){
-        float [] res = new float[numExperts];
-        for (int i = 0; i < numExperts; i++){
+    public static float[] calculateWeightsVector(float[] distribution, int numExperts) {
+        float[] res = new float[numExperts];
+        for (int i = 0; i < numExperts; i++) {
             res[i] = calculateWeight(distribution[0], i, numExperts);
         }
         return res;
     }
 
-    private static float calculateWeight(float firstWeight, int currentExpertNumber, int totalExpertsNumber){
-        if (currentExpertNumber == 0){
+    private static float calculateWeight(float firstWeight, int currentExpertNumber, int totalExpertsNumber) {
+        if (currentExpertNumber == 0) {
             return firstWeight;
-        } else if (currentExpertNumber == totalExpertsNumber-1){
+        } else if (currentExpertNumber == totalExpertsNumber - 1) {
             float acc = calculatePredessorsWeightsSum(firstWeight, currentExpertNumber, totalExpertsNumber);
             return 1 - acc;
         } else {
             float acc = calculatePredessorsWeightsSum(firstWeight, currentExpertNumber, totalExpertsNumber);
-            return (1 - acc)*firstWeight;
+            return (1 - acc) * firstWeight;
         }
     }
 
-    private static float calculatePredessorsWeightsSum(float firstWeight, int currentExpertNumber, int totalExpertsNumber){
+    private static float calculatePredessorsWeightsSum(float firstWeight, int currentExpertNumber, int totalExpertsNumber) {
         float acc = 0f;
-        for (int i = 0; i < currentExpertNumber; i++){
+        for (int i = 0; i < currentExpertNumber; i++) {
             acc += calculateWeight(firstWeight, i, totalExpertsNumber);
         }
         return acc;
+    }
+
+
+    public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromMultiLevelJSONModel(TTJSONMultiLevelInputModel ttjsonModel, int targetScaleSize) {
+        Map<String, List<TTExpertEstimationsModel>> estimations = ttjsonModel.getEstimations();
+        Map<String, Integer> averages = getAverageForEachNumericCriterion(estimations);
+        Map<String, List<TTCriteriaModel>> criteria = ttjsonModel.getCriteria();
+        List<TTAbstractionLevelModel> levels = ttjsonModel.getAbstractionLevels();
+        List<ArrayList<ArrayList<TT2HFLTS>>> expertsEstimationsList = new ArrayList<>();
+        for (TTExpertModel expert : ttjsonModel.getExperts()) {
+            List<TTExpertEstimationsModel> expertEstimations = estimations.get(expert.getExpertID());
+            ArrayList<ArrayList<TT2HFLTS>> alternativesEstimationsList = new ArrayList<>();
+            for (TTAlternativeModel alternativeModel : ttjsonModel.getAlternatives()) {
+                ArrayList<TT2HFLTS> singleAltEstList = new ArrayList<>();
+                TTExpertEstimationsModel expEst = expertEstimations
+                        .stream()
+                        .filter((estModel) -> estModel.getAlternativeID().equals(alternativeModel.getAlternativeID()))
+                        .findFirst()
+                        .orElse(null);
+
+                for (TTAbstractionLevelModel level : levels) {
+                    for (TTCriteriaModel criteriaModel : criteria.get(level.getAbstractionLevelID())) {
+                        TTCriteriaEstimationsModel critEst = expEst.getCriteria2Estimation()
+                                .stream()
+                                .filter((e) -> e.getCriteriaID().equals(criteriaModel.getCriteriaID()))
+                                .findFirst()
+                                .orElse(null);
+
+                        TT2HFLTS res;
+                        if (critEst.getQualitative()) {
+                            // transform it to 2tuple as usual linguistic info
+                            res = transformToTTHFLTS(ttjsonModel.getScales(), critEst.getScaleID(), critEst.getEstimation());
+                        } else {
+                            // transform numeric to tuple and then to TTHFLTS
+                            // however, first of all we need to normalize the values
+                            float numericEstimation = Integer.parseInt(critEst.getEstimation().get(0))/((float)averages.get(critEst.getCriteriaID()));
+                            List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
+                            float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
+                            TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, targetScaleSize);
+                            List<TTTuple> tmpL = new ArrayList<>();
+                            tmpL.add(resTuple);
+                            res = new TT2HFLTS(tmpL);
+                        }
+                        singleAltEstList.add(res);
+                    }
+                }
+                alternativesEstimationsList.add(singleAltEstList);
+            }
+            expertsEstimationsList.add(alternativesEstimationsList);
+        }
+        return expertsEstimationsList;
+    }
+
+    private static Map<String, Integer> getAverageForEachNumericCriterion(Map<String, List<TTExpertEstimationsModel>> estimationsMap){
+        Map<String, List<Integer>> averages = new TreeMap<>();
+        Map<String, Integer> sumFinal = new TreeMap<>();
+        for (Map.Entry<String, List<TTExpertEstimationsModel>> entry: estimationsMap.entrySet()){
+            for (TTExpertEstimationsModel ttExpertEstimationsModel: entry.getValue()){
+                for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel: ttExpertEstimationsModel.getCriteria2Estimation()){
+                    if (!ttCriteriaEstimationsModel.getQualitative()){
+                        List<Integer> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
+                        if (averList == null) {
+                            averList = new ArrayList<>();
+                        }
+                        averList.add(Integer.parseInt(ttCriteriaEstimationsModel.getEstimation().get(0)));
+                        averages.put(ttCriteriaEstimationsModel.getCriteriaID(),averList);
+                    }
+                }
+
+            }
+        }
+        for (Map.Entry<String, List<Integer>> entry: averages.entrySet()){
+            sumFinal.put(entry.getKey(), entry.getValue().stream().mapToInt(Integer::intValue).sum());
+        }
+        return sumFinal;
+
+    }
+
+    public static List<TTCriteriaModel> getOrderedCriteriaList(Map<String, List<TTCriteriaModel>> criteria,
+                                                               List<TTAbstractionLevelModel> levels){
+        List<TTCriteriaModel> res = new ArrayList<>();
+        for (TTAbstractionLevelModel level : levels) {
+            for (TTCriteriaModel criteriaModel : criteria.get(level.getAbstractionLevelID())) {
+                res.add(criteriaModel);
+            }
+        }
+        return res;
     }
 }

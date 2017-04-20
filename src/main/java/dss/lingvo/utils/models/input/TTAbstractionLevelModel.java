@@ -1,16 +1,9 @@
 package dss.lingvo.utils.models.input;
 
 public class TTAbstractionLevelModel {
-    private int abstractionLevelID;
+    private String abstractionLevelID;
     private String abstractionLevelName;
 
-    public int getAbstractionLevelID() {
-        return abstractionLevelID;
-    }
-
-    public void setAbstractionLevelID(int abstractionLevelID) {
-        this.abstractionLevelID = abstractionLevelID;
-    }
 
     public String getAbstractionLevelName() {
         return abstractionLevelName;
@@ -18,5 +11,13 @@ public class TTAbstractionLevelModel {
 
     public void setAbstractionLevelName(String abstractionLevelName) {
         this.abstractionLevelName = abstractionLevelName;
+    }
+
+    public String getAbstractionLevelID() {
+        return abstractionLevelID;
+    }
+
+    public void setAbstractionLevelID(String abstractionLevelID) {
+        this.abstractionLevelID = abstractionLevelID;
     }
 }

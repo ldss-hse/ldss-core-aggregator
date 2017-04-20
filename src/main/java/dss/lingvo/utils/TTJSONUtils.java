@@ -1,7 +1,8 @@
 package dss.lingvo.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dss.lingvo.utils.models.input.TTJSONInputModel;
+import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.io.File;
@@ -25,6 +26,18 @@ public class TTJSONUtils {
         }
         File file = new File(tmpRes.getFile());
         return mapper.readValue(file, TTJSONInputModel.class);
+    }
+
+    public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        //Get file from resources folder
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL tmpRes = classLoader.getResource(fileName);
+        if (tmpRes == null) {
+            return null;
+        }
+        File file = new File(tmpRes.getFile());
+        return mapper.readValue(file, TTJSONMultiLevelInputModel.class);
     }
 
     public void writeResultToJSON(String fileName, TTJSONOutputModel jsonString) throws IOException {

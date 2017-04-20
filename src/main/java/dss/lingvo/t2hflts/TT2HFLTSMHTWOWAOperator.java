@@ -7,7 +7,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TT2HFLTSMHTWOWAOperator {
-
+    /**
+     * @param numAlt
+     * @param numExp
+     * @param p - expert weights
+     * @param w
+     * @param aggEstAll
+     * @param targetScaleSize
+     * @return
+     */
     public List<TT2HFLTS> calculate(int numAlt,
                                          int numExp,
                                          float[] p,

@@ -2,9 +2,13 @@ package dss.lingvo.t2hflts;
 
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
+import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
+import dss.lingvo.utils.TTConstants;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTUtils;
-import dss.lingvo.utils.models.input.TTJSONInputModel;
+import dss.lingvo.utils.models.input.TTAlternativeModel;
+import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.io.IOException;
@@ -15,8 +19,7 @@ public class TT2HFLTSCoordinator {
 
     public void go() throws IOException {
         TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
-        TTJSONInputModel ttjsonModel = null;
-        ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
+        TTJSONInputModel ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
 
         if (ttjsonModel == null) {
             return;
@@ -69,10 +72,69 @@ public class TT2HFLTSCoordinator {
         System.out.println(resVector);
 
         float sum = 0f;
-        for (int i = 0; i < resVector.length; i++){
+        for (int i = 0; i < resVector.length; i++) {
             sum += resVector[i];
         }
         System.out.println(sum);
 
+        //---------------------
+        // Enable multilevel task solving
+
+
+        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
+        System.out.println(model);
+
+
+        // Step 1. Aggregate by abstraction level
+        TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateByAbstractionLevel(model.getCriteria(),
+                        model.getAbstractionLevels(),
+                        all,
+                        targetScaleSize);
+        System.out.println(allByLevel);
+
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
+                .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
+                        model.getAlternatives().size(),
+                        model.getExperts().size(),
+                        allByLevel);
+        System.out.println(allByExpert);
+
+        float[] a = new float[model.getExpertWeightsRule().values().size()];
+        float curMax = 0f;
+        for (Map.Entry<String, Float> e: model.getExpertWeightsRule().entrySet()){
+            if (Math.abs(curMax-e.getValue())< TTConstants.FLOAT_PRECISION_DELTA){
+                curMax = e.getValue();
+            }
+        }
+        a[0] = curMax;
+        a[1] = 1-curMax;
+        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateByExpert(model.getAbstractionLevels().size(),
+                        model.getAlternatives().size(),
+                        7,
+                        allByExpert,
+                        a);
+        System.out.println(altToLevel);
+
+        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator
+                .aggregateFinalAltEst(7,
+                        altToLevel);
+        System.out.println(altVec);
+
+        List<TT2HFLTS> sortedVec = TTUtils.sortTT2HFLTS(altVec, true);
+        for (TT2HFLTS el: sortedVec){
+            int originalIndex = 0;
+            for (int i = 0; i < altVec.size(); i++){
+                if (altVec.get(i).equals(el)){
+                    originalIndex = i;
+                    break;
+                }
+            }
+            TTAlternativeModel ttAlternativeModel = model.getAlternatives().get(originalIndex);
+            System.out.println(originalIndex+". <"+ttAlternativeModel.getAlternativeID()+"> " + ttAlternativeModel.getAlternativeName());
+        }
     }
 }

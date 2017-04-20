@@ -2,4 +2,5 @@
  
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=dss.lingvo)](https://sonarqube.com/dashboard/index?id=dss.lingvo)
 
-[LDSS-6] enabled experts weights calculation
+[LDSS-6] enable experts weights calculation
+[LDSS-7] enable paddy corner case
