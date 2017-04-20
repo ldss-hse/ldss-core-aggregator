@@ -85,12 +85,11 @@ def estimate_to_json(criteria_name, estimation):
 
 def read_expert_estimations(file_name):
     final_dic = {}
-    with open('/Users/demidovs/Documents/Projects/lingvo-dss/src/main/resources/paddy_case/plain_results/ecolog.txt') as f:
+    with open(file_name) as f:
         current_level = ""
         for line in f.readlines():
             if re.match('(МУА|ЭКУА|НУА|ЮУА|ПУА|ЭПУА|ЭТУА|ЭСТУА)', line):
                 current_level = line.strip()
-                print(current_level)
             elif re.match('А.(МУА|ЭКУА|НУА|ЮУА|ПУА|ЭПУА|ЭТУА|ЭСТУА).\d+\s*\&.*', line):
                 # 1. find alt name
                 alt_name = line.split('&')[0].strip()

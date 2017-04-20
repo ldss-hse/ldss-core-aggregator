@@ -258,10 +258,12 @@ public class TTUtils {
             ArrayList<ArrayList<TT2HFLTS>> alternativesEstimationsList = new ArrayList<>();
             for (TTAlternativeModel alternativeModel : ttjsonModel.getAlternatives()) {
                 ArrayList<TT2HFLTS> singleAltEstList = new ArrayList<>();
-                TTExpertEstimationsModel expEst = expertEstimations.stream()
+                TTExpertEstimationsModel expEst = expertEstimations
+                        .stream()
                         .filter((estModel) -> estModel.getAlternativeID().equals(alternativeModel.getAlternativeID()))
                         .findFirst()
                         .orElse(null);
+
                 for (TTAbstractionLevelModel level : levels) {
                     for (TTCriteriaModel criteriaModel : criteria.get(level.getAbstractionLevelID())) {
                         TTCriteriaEstimationsModel critEst = expEst.getCriteria2Estimation()
@@ -270,7 +272,7 @@ public class TTUtils {
                                 .findFirst()
                                 .orElse(null);
 
-                        TT2HFLTS res = null;
+                        TT2HFLTS res;
                         if (critEst.getQualitative()) {
                             // transform it to 2tuple as usual linguistic info
                             res = transformToTTHFLTS(ttjsonModel.getScales(), critEst.getScaleID(), critEst.getEstimation());
