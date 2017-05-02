@@ -48,7 +48,7 @@ public class TTUtils {
         return 1;
     }
 
-    private static int compareTT2HFLTS(TT2HFLTS tt1, TT2HFLTS tt2) {
+    public static int compareTT2HFLTS(TT2HFLTS tt1, TT2HFLTS tt2) {
         float tt1Score = tt1.getScore();
         float tt2Score = tt2.getScore();
         if (tt1Score < tt2Score) {

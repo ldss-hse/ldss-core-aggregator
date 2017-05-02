@@ -3,16 +3,19 @@ package dss.lingvo.t2hflts;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
-import dss.lingvo.utils.TTConstants;
 import dss.lingvo.utils.TTJSONUtils;
+import dss.lingvo.utils.TTReportUtils;
 import dss.lingvo.utils.TTUtils;
 import dss.lingvo.utils.models.input.TTAlternativeModel;
 import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
 import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class TT2HFLTSCoordinator {
     private TTUtils log = TTUtils.getInstance();
@@ -94,12 +97,17 @@ public class TT2HFLTSCoordinator {
                         targetScaleSize);
         System.out.println(allByLevel);
 
+        String rstr = TTReportUtils.dumpAggregationByAbstraction(allByLevel, model.getAbstractionLevels(), model.getAlternatives(), model.getExperts(), targetScaleSize);
+
         List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
                 .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
                         model.getAlternatives().size(),
                         model.getExperts().size(),
                         allByLevel);
         System.out.println(allByExpert);
+
+        String rstr2 = TTReportUtils.dumpTransposeByExpert(allByExpert, model.getAbstractionLevels(), model.getAlternatives(), model.getExperts(), targetScaleSize);
+
 
         float[] a = new float[model.getExpertWeightsRule().values().size()];
         float curMax = 0f;
@@ -118,23 +126,38 @@ public class TT2HFLTSCoordinator {
                         allByExpert,
                         a);
         System.out.println(altToLevel);
+        String rstr3 = TTReportUtils.dumpAggregationByAltToLevel(altToLevel,
+                model.getAbstractionLevels(),
+                model.getAlternatives(),
+                targetScaleSize);
 
         List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator
                 .aggregateFinalAltEst(7,
                         altToLevel);
         System.out.println(altVec);
+        String rstr4 = TTReportUtils.dumpFinalVector(altVec,model.getAlternatives(), targetScaleSize);
 
-        List<TT2HFLTS> sortedVec = TTUtils.sortTT2HFLTS(altVec, true);
-        for (TT2HFLTS el: sortedVec){
-            int originalIndex = 0;
-            for (int i = 0; i < altVec.size(); i++){
-                if (altVec.get(i).equals(el)){
-                    originalIndex = i;
-                    break;
-                }
+        List<Pair<String, TT2HFLTS>> resZippedVec = IntStream.range(0, altVec.size())
+                .mapToObj(i -> new Pair<>(model.getAlternatives().get(i).getAlternativeID(), altVec.get(i)))
+                .collect(Collectors.toList());
+
+        Collections.sort(resZippedVec, Collections.reverseOrder(new Comparator<Pair<String, TT2HFLTS>>() {
+            @Override
+            public int compare(Pair<String, TT2HFLTS> o1, Pair<String, TT2HFLTS> o2) {
+                return TTUtils.compareTT2HFLTS(o1.getValue(), o2.getValue());
             }
-            TTAlternativeModel ttAlternativeModel = model.getAlternatives().get(originalIndex);
-            System.out.println(originalIndex+". <"+ttAlternativeModel.getAlternativeID()+"> " + ttAlternativeModel.getAlternativeName());
+        }));
+
+        for (Pair<String, TT2HFLTS> stringTT2HFLTSPair: resZippedVec){
+            TTAlternativeModel altInstance = model.getAlternatives()
+                    .stream()
+                    .filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID()
+                            .equals(stringTT2HFLTSPair.getKey()))
+                    .findFirst()
+                    .orElse(null);
+            System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName());
         }
+
+        String rstr5 = TTReportUtils.dumpFinalSortedZippedVector(resZippedVec, model.getAlternatives());
     }
 }
