@@ -1,16 +1,12 @@
 package dss.lingvo.t2;
 
 import dss.lingvo.hflts.TTHFLTSScale;
-import dss.lingvo.utils.TTConstants;
 import dss.lingvo.utils.models.input.TTScaleModel;
-import javafx.util.converter.FloatStringConverter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class TTNormalizedTranslator {
     private static TTNormalizedTranslator myInstance = new TTNormalizedTranslator();

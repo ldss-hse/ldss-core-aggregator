@@ -59,7 +59,6 @@ public class TT2HFLTSCoordinator {
         TTJSONUtils.getInstance().writeResultToJSON("build/resources/result.json", res);
 
         // now how to work with numbers
-        float estimation = 0.78f;
         int targetScaleSize = 7;
 
         List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(0.78f, 5);
@@ -105,8 +104,9 @@ public class TT2HFLTSCoordinator {
         float[] a = new float[model.getExpertWeightsRule().values().size()];
         float curMax = 0f;
         for (Map.Entry<String, Float> e: model.getExpertWeightsRule().entrySet()){
-            if (Math.abs(curMax-e.getValue())< TTConstants.FLOAT_PRECISION_DELTA){
+            if (e.getKey().equals("1")){
                 curMax = e.getValue();
+                break;
             }
         }
         a[0] = curMax;
