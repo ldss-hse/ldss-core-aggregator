@@ -1,6 +1,5 @@
 package dss.lingvo.t2hflts;
 
-import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
@@ -14,11 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by demidovs on 18.01.17.
- */
 public class TT2HFLTSMHTWAOperatorTest {
-
     private static TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator;
 
     @BeforeClass
