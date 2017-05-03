@@ -74,7 +74,7 @@ public class TTNormalizedTranslator {
                 tmp = (estimation - a) / (b - a);
             } else if (estimation <= d) {
                 tmp = 1f;
-            } else if (estimation <= c) {
+            } else {
                 tmp = (c - estimation) / (c - d);
             }
             resFuzzySet.add(tmp);
@@ -83,7 +83,7 @@ public class TTNormalizedTranslator {
     }
 
     private List<float[]> getRangesForScale(int targetScaleSize) {
-        float delta = 1f / (targetScaleSize-1);
+        float delta = 1f / (targetScaleSize - 1);
         List<float[]> res = new ArrayList<>();
         for (int i = 0; i < targetScaleSize; i++) {
             final int numIntervals = 4;
@@ -91,13 +91,13 @@ public class TTNormalizedTranslator {
             if (i == 0) {
                 intervals[0] = intervals[1] = intervals[2] = 0;
                 intervals[3] = intervals[0] + delta;
-            } else if (i == targetScaleSize-1){
-                intervals[0] = (i-1) * delta;
+            } else if (i == targetScaleSize - 1) {
+                intervals[0] = (i - 1) * delta;
                 intervals[1] = intervals[2] = intervals[3] = i * delta;
             } else {
-                intervals[0] = (i-1) * delta;
+                intervals[0] = (i - 1) * delta;
                 intervals[1] = intervals[2] = i * delta;
-                intervals[3] = (i+1) * delta;
+                intervals[3] = (i + 1) * delta;
             }
             res.add(intervals);
         }
@@ -106,13 +106,13 @@ public class TTNormalizedTranslator {
 
     public float getTranslationFromFuzzySet(List<Float> fuzzySet) {
         float acc = 0f;
-        for (int i = 0; i < fuzzySet.size(); i++){
+        for (int i = 0; i < fuzzySet.size(); i++) {
             acc += i * fuzzySet.get(i);
         }
         return acc;
     }
 
-    public TTTuple getTTupleForNumericTranslation(float translation, int targetScaleSize){
+    public TTTuple getTTupleForNumericTranslation(float translation, int targetScaleSize) {
         int position = Math.round(translation);
         float alpha = translation - position;
         TTHFLTSScale scale = scaleStore.get(targetScaleSize);
