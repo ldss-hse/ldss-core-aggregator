@@ -100,14 +100,14 @@ def read_expert_estimations(file_name):
                 for i, est in enumerate([i.strip() for i in line.split('&')[1:]]):
                     try:
                         tmp = int(str(est).replace("\\\\ \\hline", ""))
-                        isQualitative = False
+                        is_qualitative = False
                     except ValueError:
-                        isQualitative = True
+                        is_qualitative = True
                         numbers = re.findall('\d+', est)
                         label_position = int(numbers[0]) - 1
                         scale_size = numbers[1]
                         tmp = scales[str(scale_size)][label_position]
-                    final_dic[alt_name][criteria[current_level][i]] = {"qualitative": isQualitative,
+                    final_dic[alt_name][criteria[current_level][i]] = {"qualitative": is_qualitative,
                                                                                "value": tmp, "scaleSize": scale_size}
     return final_dic
 

@@ -26,7 +26,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
                             .filter(i -> {
                                 TTCriteriaModel res = criteriaList
                                         .stream()
-                                        .filter((e) -> e.getCriteriaID().equals(orderedCriteria.get(i).getCriteriaID()))
+                                        .filter(e -> e.getCriteriaID().equals(orderedCriteria.get(i).getCriteriaID()))
                                         .findFirst()
                                         .orElse(null);
                                 return res != null;
@@ -59,9 +59,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
         //initialize the matrix
         IntStream.range(0, altSize).forEach(i -> {
             ArrayList<TT2HFLTS> levelEst = new ArrayList<>();
-            IntStream.range(0, levelsSize).forEach(j -> {
-                levelEst.add(null);
-            });
+            IntStream.range(0, levelsSize).forEach(j -> levelEst.add(null));
             levelEstimates.add(levelEst);
         });
 

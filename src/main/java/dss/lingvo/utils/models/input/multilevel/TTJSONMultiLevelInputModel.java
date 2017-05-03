@@ -1,10 +1,8 @@
 package dss.lingvo.utils.models.input.multilevel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import dss.lingvo.utils.models.input.*;
 import dss.lingvo.utils.models.input.TTCriteriaModel;
 import dss.lingvo.utils.models.input.common.TTCommonInputModel;
-import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 
 import java.util.List;
 import java.util.Map;
