@@ -49,6 +49,7 @@ sonarqube {
     properties {
         property "sonar.projectName", "Linguistic Decision Support System"
         property "sonar.projectKey", "dss.lingvo"
+        property "sonar.exclusions", "src/main/java/dss/lingvo/samples/*.java"
     }
 }
 
