@@ -4,12 +4,15 @@ import dss.lingvo.hflts.TTHFLTSScale;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
+import dss.lingvo.utils.models.input.TTCriteriaModel;
+import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +24,8 @@ import static org.mockito.Mockito.*;
 
 public class TTUtilsTest {
 
+    private static TTJSONUtils ttjsonReader;
+    private static TTJSONMultiLevelInputModel model;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
@@ -37,7 +42,7 @@ public class TTUtilsTest {
     }
 
     @BeforeClass
-    public static void runOnceBeforeClass() {
+    public static void runOnceBeforeClass() throws IOException {
         String[] scale9 = {"0", "1", "2", "3", "4", "5", "6", "7", "8"};
         TTHFLTSScale hScale9 = new TTHFLTSScale(scale9);
 
@@ -53,6 +58,10 @@ public class TTUtilsTest {
         scaleStore.put(scale5.length, hScale5);
 
         TTNormalizedTranslator.setScaleStore(scaleStore);
+
+        ttjsonReader = TTJSONUtils.getInstance();
+        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        TTNormalizedTranslator.registerScalesBatch(model.getScales());
     }
 
     @Test
@@ -211,5 +220,24 @@ public class TTUtilsTest {
         assertEquals(resVector.length, 4);
         assertTrue(Arrays.equals(expV, resVector));
         assertEquals(1, sum, TTConstants.FLOAT_PRECISION_DELTA);
+    }
+
+    @Test
+    public void testGetAllEstimationsFromMultiLevelJSONModel(){
+        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
+
+        assertEquals(7, all.size());
+        assertEquals(26, all.get(0).size());
+        assertEquals(25, all.get(0).get(0).size());
+    }
+
+    @Test
+    public void testGetOrderedCriteriaList() throws Exception {
+        List<TTCriteriaModel> resList = TTUtils.getOrderedCriteriaList(model.getCriteria(), model.getAbstractionLevels());
+
+        assertEquals(25, resList.size());
+        assertEquals("К.МУА.1", resList.get(0).getCriteriaID());
+        assertEquals("К.МУА.2", resList.get(1).getCriteriaID());
+        assertEquals("К.МУА.3", resList.get(2).getCriteriaID());
     }
 }

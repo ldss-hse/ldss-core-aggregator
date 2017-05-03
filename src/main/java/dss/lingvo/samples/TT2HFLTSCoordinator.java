@@ -1,7 +1,9 @@
-package dss.lingvo.t2hflts;
+package dss.lingvo.samples;
 
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
+import dss.lingvo.t2hflts.TT2HFLTS;
+import dss.lingvo.t2hflts.TT2HFLTSMHTWOWAOperator;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
 import dss.lingvo.utils.TTJSONUtils;
 import dss.lingvo.utils.TTReportUtils;

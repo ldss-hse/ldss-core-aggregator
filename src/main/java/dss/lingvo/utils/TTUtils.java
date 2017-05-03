@@ -260,7 +260,7 @@ public class TTUtils {
                 ArrayList<TT2HFLTS> singleAltEstList = new ArrayList<>();
                 TTExpertEstimationsModel expEst = expertEstimations
                         .stream()
-                        .filter((estModel) -> estModel.getAlternativeID().equals(alternativeModel.getAlternativeID()))
+                        .filter(estModel -> estModel.getAlternativeID().equals(alternativeModel.getAlternativeID()))
                         .findFirst()
                         .orElse(null);
 
@@ -279,7 +279,7 @@ public class TTUtils {
                         } else {
                             // transform numeric to tuple and then to TTHFLTS
                             // however, first of all we need to normalize the values
-                            float numericEstimation = Integer.parseInt(critEst.getEstimation().get(0))/((float)averages.get(critEst.getCriteriaID()));
+                            float numericEstimation = Integer.parseInt(critEst.getEstimation().get(0)) / ((float) averages.get(critEst.getCriteriaID()));
                             List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
                             float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
                             TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, targetScaleSize);
@@ -297,25 +297,25 @@ public class TTUtils {
         return expertsEstimationsList;
     }
 
-    private static Map<String, Integer> getAverageForEachNumericCriterion(Map<String, List<TTExpertEstimationsModel>> estimationsMap){
+    private static Map<String, Integer> getAverageForEachNumericCriterion(Map<String, List<TTExpertEstimationsModel>> estimationsMap) {
         Map<String, List<Integer>> averages = new TreeMap<>();
         Map<String, Integer> sumFinal = new TreeMap<>();
-        for (Map.Entry<String, List<TTExpertEstimationsModel>> entry: estimationsMap.entrySet()){
-            for (TTExpertEstimationsModel ttExpertEstimationsModel: entry.getValue()){
-                for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel: ttExpertEstimationsModel.getCriteria2Estimation()){
-                    if (!ttCriteriaEstimationsModel.getQualitative()){
+        for (Map.Entry<String, List<TTExpertEstimationsModel>> entry : estimationsMap.entrySet()) {
+            for (TTExpertEstimationsModel ttExpertEstimationsModel : entry.getValue()) {
+                for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel : ttExpertEstimationsModel.getCriteria2Estimation()) {
+                    if (!ttCriteriaEstimationsModel.getQualitative()) {
                         List<Integer> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
                         if (averList == null) {
                             averList = new ArrayList<>();
                         }
                         averList.add(Integer.parseInt(ttCriteriaEstimationsModel.getEstimation().get(0)));
-                        averages.put(ttCriteriaEstimationsModel.getCriteriaID(),averList);
+                        averages.put(ttCriteriaEstimationsModel.getCriteriaID(), averList);
                     }
                 }
 
             }
         }
-        for (Map.Entry<String, List<Integer>> entry: averages.entrySet()){
+        for (Map.Entry<String, List<Integer>> entry : averages.entrySet()) {
             sumFinal.put(entry.getKey(), entry.getValue().stream().mapToInt(Integer::intValue).sum());
         }
         return sumFinal;
@@ -323,7 +323,7 @@ public class TTUtils {
     }
 
     public static List<TTCriteriaModel> getOrderedCriteriaList(Map<String, List<TTCriteriaModel>> criteria,
-                                                               List<TTAbstractionLevelModel> levels){
+                                                               List<TTAbstractionLevelModel> levels) {
         List<TTCriteriaModel> res = new ArrayList<>();
         for (TTAbstractionLevelModel level : levels) {
             for (TTCriteriaModel criteriaModel : criteria.get(level.getAbstractionLevelID())) {

@@ -1,6 +1,6 @@
 package dss.lingvo;
 
-import dss.lingvo.t2hflts.TT2HFLTSCoordinator;
+import dss.lingvo.samples.TT2HFLTSCoordinator;
 
 import java.io.IOException;
 
