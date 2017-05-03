@@ -70,11 +70,11 @@ public class TTNormalizedTranslator {
             Float tmp = null;
             if ((a > estimation) || (c < estimation)) {
                 tmp = 0f;
-            } else if ((estimation >= a) && (estimation <= b)) {
+            } else if (estimation <= b) {
                 tmp = (estimation - a) / (b - a);
-            } else if ((estimation >= b) && (estimation <= d)) {
+            } else if (estimation <= d) {
                 tmp = 1f;
-            } else if ((estimation >= d) && (estimation <= c)) {
+            } else if (estimation <= c) {
                 tmp = (c - estimation) / (c - d);
             }
             resFuzzySet.add(tmp);
@@ -82,7 +82,7 @@ public class TTNormalizedTranslator {
         return resFuzzySet;
     }
 
-    public List<float[]> getRangesForScale(int targetScaleSize) {
+    private List<float[]> getRangesForScale(int targetScaleSize) {
         float delta = 1f / (targetScaleSize-1);
         List<float[]> res = new ArrayList<>();
         for (int i = 0; i < targetScaleSize; i++) {
