@@ -6,6 +6,8 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.utils.models.input.TTCriteriaModel;
 import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
+import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
+import dss.lingvo.utils.models.output.TTJSONOutputModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -239,5 +241,30 @@ public class TTUtilsTest {
         assertEquals("К.МУА.1", resList.get(0).getCriteriaID());
         assertEquals("К.МУА.2", resList.get(1).getCriteriaID());
         assertEquals("К.МУА.3", resList.get(2).getCriteriaID());
+    }
+
+    @Test
+    public void testPrepareAllResultsForJSON() throws Exception {
+        List<TT2HFLTS> altOverall = new ArrayList<>();
+        ArrayList<TTTuple> tmp = new ArrayList<>();
+        tmp.add(new TTTuple("2",7,0f,2));
+        tmp.add(new TTTuple("3",7,0f,3));
+        tmp.add(new TTTuple("4",7,0f,4));
+
+        TT2HFLTS myHFLTS1 = new TT2HFLTS(tmp);
+
+        ArrayList<TTTuple> tmp2 = new ArrayList<>();
+        tmp2.add(new TTTuple("2",5,0f,2));
+        tmp2.add(new TTTuple("3",5,0f,3));
+
+        TT2HFLTS myHFLTS2 = new TT2HFLTS(tmp2);
+        altOverall.add(myHFLTS1);
+        altOverall.add(myHFLTS2);
+        TTJSONInputModel ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
+
+        TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altOverall, ttjsonModel, 7);
+        assertEquals(1, res.getAbstractionLevels().size());
+        assertEquals(5, res.getAlternatives().size());
+        assertEquals(3, res.getExperts().size());
     }
 }
