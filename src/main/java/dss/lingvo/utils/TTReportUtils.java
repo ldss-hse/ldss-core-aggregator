@@ -4,7 +4,6 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.utils.models.input.TTAbstractionLevelModel;
 import dss.lingvo.utils.models.input.TTAlternativeModel;
-import dss.lingvo.utils.models.input.TTCriteriaModel;
 import dss.lingvo.utils.models.input.TTExpertModel;
 import javafx.util.Pair;
 
@@ -12,6 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TTReportUtils {
+    private TTReportUtils() {
+        throw new IllegalAccessError("Utility class");
+    }
+
+    private static String nextLine = "\\\\ \\hline \n";
+    private static String andLine = " & ";
+
     public static String dumpAggregationByAbstraction(List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel,
                                                       List<TTAbstractionLevelModel> levelsList,
                                                       List<TTAlternativeModel> altList,
@@ -19,19 +25,20 @@ public class TTReportUtils {
                                                       int targetScaleSize) {
         StringBuilder bld = new StringBuilder();
         for (int expertIndex = 0; expertIndex < allByLevel.size(); expertIndex++) {
-            String res = "\n\n" + expertsList.get(expertIndex).getExpertName() + "\n\n";
+            bld.append("\n\n" + expertsList.get(expertIndex).getExpertName() + "\n\n");
             for (int altIndex = 0; altIndex < altList.size(); altIndex++) {
-                res += altList.get(altIndex).getAlternativeID() + " & ";
+                bld.append(altList.get(altIndex).getAlternativeID() + " & ");
                 for (int levelIndex = 0; levelIndex < levelsList.size(); levelIndex++) {
-                    res += hfltsToTableValue(allByLevel.get(expertIndex).get(altIndex).get(levelIndex), targetScaleSize);
+                    bld.append(hfltsToTableValue(allByLevel.get(expertIndex)
+                            .get(altIndex)
+                            .get(levelIndex), targetScaleSize));
                     if (levelIndex == levelsList.size() - 1) {
-                        res += "\\\\ \\hline \n";
+                        bld.append(nextLine);
                     } else {
-                        res += " & ";
+                        bld.append(andLine);
                     }
                 }
             }
-            bld.append(res);
         }
         return bld.toString();
     }
@@ -53,19 +60,18 @@ public class TTReportUtils {
                                                int targetScaleSize) {
         StringBuilder bld = new StringBuilder();
         for (int levelIndex = 0; levelIndex < allByExpert.size(); levelIndex++) {
-            String res = "\n\n" + levelsList.get(levelIndex).getAbstractionLevelID() + "\n\n";
+            bld.append("\n\n" + levelsList.get(levelIndex).getAbstractionLevelID() + "\n\n");
             for (int altIndex = 0; altIndex < altList.size(); altIndex++) {
-                res += altList.get(altIndex).getAlternativeID() + " & ";
+                bld.append(altList.get(altIndex).getAlternativeID() + " & ");
                 for (int expertIndex = 0; expertIndex < expertsList.size(); expertIndex++) {
-                    res += hfltsToTableValue(allByExpert.get(levelIndex).get(altIndex).get(expertIndex), targetScaleSize);
+                    bld.append(hfltsToTableValue(allByExpert.get(levelIndex).get(altIndex).get(expertIndex), targetScaleSize));
                     if (expertIndex == expertsList.size() - 1) {
-                        res += "\\\\ \\hline \n";
+                        bld.append(nextLine);
                     } else {
-                        res += " & ";
+                        bld.append(andLine);
                     }
                 }
             }
-            bld.append(res);
         }
         return bld.toString();
     }
@@ -81,9 +87,9 @@ public class TTReportUtils {
             for (int levelIndex = 0; levelIndex < level.size(); levelIndex++) {
                 bld.append(hfltsToTableValue(altToLevel.get(altIndex).get(levelIndex), targetScaleSize));
                 if (levelIndex == level.size() - 1) {
-                    bld.append("\\\\ \\hline \n");
+                    bld.append(nextLine);
                 } else {
-                    bld.append(" & ");
+                    bld.append(andLine);
                 }
             }
         }
@@ -97,7 +103,7 @@ public class TTReportUtils {
         for (int sortedIndex = 0; sortedIndex < originalVec.size(); sortedIndex++) {
             bld.append(altList.get(sortedIndex).getAlternativeID() + " & ");
             bld.append(hfltsToTableValue(originalVec.get(sortedIndex), targetScaleSize));
-            bld.append("\\\\ \\hline \n");
+            bld.append(nextLine);
         }
         return bld.toString();
     }
@@ -112,9 +118,9 @@ public class TTReportUtils {
                             .equals(stringTT2HFLTSPair.getKey()))
                     .findFirst()
                     .orElse(null);
-            bld.append(stringTT2HFLTSPair.getKey()+" & ");
+            bld.append(stringTT2HFLTSPair.getKey()+andLine);
             bld.append(altInstance.getAlternativeName());
-            bld.append("\\\\ \\hline \n");
+            bld.append(nextLine);
         }
         return bld.toString();
     }

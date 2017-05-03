@@ -12,11 +12,6 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class TT2HFLTSMHTWOWAMultiLevelOperator {
-
-    public List<TT2HFLTS> calculate() {
-        return null;
-    }
-
     public List<ArrayList<ArrayList<TT2HFLTS>>> aggregateByAbstractionLevel(Map<String, List<TTCriteriaModel>> criteria, List<TTAbstractionLevelModel> abstractionLevels, List<ArrayList<ArrayList<TT2HFLTS>>> all, int targetScaleSize) {
         List<TTCriteriaModel> orderedCriteria = TTUtils.getOrderedCriteriaList(criteria, abstractionLevels);
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
@@ -62,9 +57,9 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
         List<ArrayList<TT2HFLTS>> levelEstimates = new ArrayList<>();
 
         //initialize the matrix
-        IntStream.range(0, altSize).forEach((i) -> {
+        IntStream.range(0, altSize).forEach(i -> {
             ArrayList<TT2HFLTS> levelEst = new ArrayList<>();
-            IntStream.range(0, levelsSize).forEach((j) -> {
+            IntStream.range(0, levelsSize).forEach(j -> {
                 levelEst.add(null);
             });
             levelEstimates.add(levelEst);
@@ -100,11 +95,11 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
                                                                             List<ArrayList<ArrayList<TT2HFLTS>>> estGroupedByAlternatives) {
         // init the matrixes
         List<ArrayList<ArrayList<TT2HFLTS>>> levelEstimates = new ArrayList<>();
-        IntStream.range(0, levelsSize).forEach((i) -> {
+        IntStream.range(0, levelsSize).forEach(i -> {
             ArrayList<ArrayList<TT2HFLTS>> levelEst = new ArrayList<>();
-            IntStream.range(0, altSize).forEach((j) -> {
+            IntStream.range(0, altSize).forEach(j -> {
                 ArrayList<TT2HFLTS> altEst = new ArrayList<>();
-                IntStream.range(0, expertsSize).forEach((k) -> altEst.add(null));
+                IntStream.range(0, expertsSize).forEach(k -> altEst.add(null));
                 levelEst.add(altEst);
             });
             levelEstimates.add(levelEst);

@@ -268,7 +268,7 @@ public class TTUtils {
                     for (TTCriteriaModel criteriaModel : criteria.get(level.getAbstractionLevelID())) {
                         TTCriteriaEstimationsModel critEst = expEst.getCriteria2Estimation()
                                 .stream()
-                                .filter((e) -> e.getCriteriaID().equals(criteriaModel.getCriteriaID()))
+                                .filter(e -> e.getCriteriaID().equals(criteriaModel.getCriteriaID()))
                                 .findFirst()
                                 .orElse(null);
 

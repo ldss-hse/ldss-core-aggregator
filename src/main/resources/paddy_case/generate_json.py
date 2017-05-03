@@ -97,7 +97,7 @@ def read_expert_estimations(file_name):
                     final_dic[alt_name]
                 except KeyError:
                     final_dic[alt_name] = {}
-                for (i, est) in enumerate([i.strip() for i in line.split('&')[1:]]):
+                for i, est in enumerate([i.strip() for i in line.split('&')[1:]]):
                     try:
                         tmp = int(str(est).replace("\\\\ \\hline", ""))
                         isQualitative = False
@@ -119,11 +119,11 @@ for subdir, dirs, files in os.walk(os.path.join(os.getcwd(), RESULTS_DIR)):
         all_estimations_dic[file.split('.')[0]] = read_expert_estimations(os.path.join(subdir, file))
 
 all_est = []
-for (agent_name, agent_data) in all_estimations_dic.items():
+for agent_name, agent_data in all_estimations_dic.items():
     expert_est = []
-    for (alt_name, alt_data) in agent_data.items():
+    for alt_name, alt_data in agent_data.items():
         alternative_est = []
-        for (criteria_name, criteria_data) in alt_data.items():
+        for criteria_name, criteria_data in alt_data.items():
             alternative_est.append(estimate_to_json(criteria_name, criteria_data))
         expert_est.append(alternative_est_to_json(alt_name, alternative_est))
     all_est.append(expert_est_to_json(agent_name, expert_est))
