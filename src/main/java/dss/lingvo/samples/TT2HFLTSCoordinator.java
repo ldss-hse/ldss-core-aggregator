@@ -3,6 +3,7 @@ package dss.lingvo.samples;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
+import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWOWAOperator;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
 import dss.lingvo.utils.TTJSONUtils;
@@ -22,7 +23,7 @@ import java.util.stream.IntStream;
 public class TT2HFLTSCoordinator {
     private TTUtils log = TTUtils.getInstance();
 
-    public void go() throws IOException {
+    public void go(String inputFilePath) throws IOException {
         TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
         TTJSONInputModel ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
 
@@ -84,11 +85,26 @@ public class TT2HFLTSCoordinator {
         //---------------------
         // Enable multilevel task solving
 
+        float [] ww = {0.33f,0.33f,0.33f};
+        List<TTTuple> l = new ArrayList<>();
+        l.add(new TTTuple("p", 9, 0f, 3));
+        TT2HFLTS el1 = new TT2HFLTS(l);
+        List<TTTuple> l2 = new ArrayList<>();
+        l2.add(new TTTuple("mp", 9, 0f, 4));
+        TT2HFLTS el2 = new TT2HFLTS(l2);
+        List<TTTuple> l3 = new ArrayList<>();
+        l3.add(new TTTuple("mg", 9, 0f, 6));
+        TT2HFLTS el3 = new TT2HFLTS(l3);
+        List<TT2HFLTS> ll = new ArrayList<>();
+        ll.add(el1);
+        ll.add(el2);
+        ll.add(el3);
+        TT2HFLTSMHTWAOperator op = new TT2HFLTSMHTWAOperator();
+        TT2HFLTS rr = op.calculate(ll, ww, 9);
 
-        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+
+        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFilePath);
         List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
-        System.out.println(model);
-
 
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
@@ -97,19 +113,12 @@ public class TT2HFLTSCoordinator {
                         model.getAbstractionLevels(),
                         all,
                         targetScaleSize);
-        System.out.println(allByLevel);
-
-        String rstr = TTReportUtils.dumpAggregationByAbstraction(allByLevel, model.getAbstractionLevels(), model.getAlternatives(), model.getExperts(), targetScaleSize);
 
         List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
                 .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
                         model.getAlternatives().size(),
                         model.getExperts().size(),
                         allByLevel);
-        System.out.println(allByExpert);
-
-        String rstr2 = TTReportUtils.dumpTransposeByExpert(allByExpert, model.getAbstractionLevels(), model.getAlternatives(), model.getExperts(), targetScaleSize);
-
 
         float[] a = new float[model.getExpertWeightsRule().values().size()];
         float curMax = 0f;
@@ -127,17 +136,10 @@ public class TT2HFLTSCoordinator {
                         7,
                         allByExpert,
                         a);
-        System.out.println(altToLevel);
-        String rstr3 = TTReportUtils.dumpAggregationByAltToLevel(altToLevel,
-                model.getAbstractionLevels(),
-                model.getAlternatives(),
-                targetScaleSize);
 
         List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator
                 .aggregateFinalAltEst(7,
                         altToLevel);
-        System.out.println(altVec);
-        String rstr4 = TTReportUtils.dumpFinalVector(altVec,model.getAlternatives(), targetScaleSize);
 
         List<Pair<String, TT2HFLTS>> resZippedVec = IntStream.range(0, altVec.size())
                 .mapToObj(i -> new Pair<>(model.getAlternatives().get(i).getAlternativeID(), altVec.get(i)))
@@ -159,7 +161,5 @@ public class TT2HFLTSCoordinator {
                     .orElse(null);
             System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName());
         }
-
-        String rstr5 = TTReportUtils.dumpFinalSortedZippedVector(resZippedVec, model.getAlternatives());
     }
 }

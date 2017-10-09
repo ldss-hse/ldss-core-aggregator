@@ -30,13 +30,8 @@ public class TTJSONUtils {
 
     public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        //Get file from resources folder
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL tmpRes = classLoader.getResource(fileName);
-        if (tmpRes == null) {
-            return null;
-        }
-        File file = new File(tmpRes.getFile());
+
+        File file = new File(fileName);
         return mapper.readValue(file, TTJSONMultiLevelInputModel.class);
     }
 
