@@ -26,19 +26,12 @@ public class TTJSONUtils {
     public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName, boolean isResourceFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
-        File file;
         if (isResourceFile) {
-            //Get file from resources folder
-            ClassLoader classLoader = getClass().getClassLoader();
-            URL tmpRes = classLoader.getResource(fileName);
-            if (tmpRes == null) {
-                return null;
-            }
-            file = new File(tmpRes.getFile());
-        } else {
-            file = new File(fileName);
+            InputStream modelFileStream = getClass().getResourceAsStream('/'+fileName);
+            return mapper.readValue(modelFileStream, TTJSONMultiLevelInputModel.class);
         }
 
+        File file = new File(fileName);
         return mapper.readValue(file, TTJSONMultiLevelInputModel.class);
     }
 
