@@ -62,7 +62,7 @@ public class TTUtilsTest {
         TTNormalizedTranslator.setScaleStore(scaleStore);
 
         ttjsonReader = TTJSONUtils.getInstance();
-        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json", true);
         TTNormalizedTranslator.registerScalesBatch(model.getScales());
     }
 
@@ -97,7 +97,7 @@ public class TTUtilsTest {
         TTUtils v = TTUtils.getInstance();
         v.info("hello");
 
-        assertEquals("hello\n", outContent.toString());
+        assertEquals("hello", outContent.toString().trim());
     }
 
     @Test
@@ -238,9 +238,16 @@ public class TTUtilsTest {
         List<TTCriteriaModel> resList = TTUtils.getOrderedCriteriaList(model.getCriteria(), model.getAbstractionLevels());
 
         assertEquals(25, resList.size());
-        assertEquals("К.МУА.1", resList.get(0).getCriteriaID());
-        assertEquals("К.МУА.2", resList.get(1).getCriteriaID());
-        assertEquals("К.МУА.3", resList.get(2).getCriteriaID());
+
+        List<TTCriteriaModel> criteriaMYA = model.getCriteria().get("management");
+
+        String criterionMYA1 = criteriaMYA.get(0).getCriteriaID();
+        String criterionMYA2 = criteriaMYA.get(1).getCriteriaID();
+        String criterionMYA3 = criteriaMYA.get(2).getCriteriaID();
+
+        assertEquals(criterionMYA1, resList.get(0).getCriteriaID());
+        assertEquals(criterionMYA2, resList.get(1).getCriteriaID());
+        assertEquals(criterionMYA3, resList.get(2).getCriteriaID());
     }
 
     @Test

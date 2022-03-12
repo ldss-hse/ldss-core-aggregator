@@ -7,6 +7,7 @@ import dss.lingvo.utils.models.output.TTJSONOutputModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 public class TTJSONUtils {
@@ -18,18 +19,17 @@ public class TTJSONUtils {
 
     public TTJSONInputModel readJSONDescription(String fileName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        //Get file from resources folder
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL tmpRes = classLoader.getResource(fileName);
-        if (tmpRes == null) {
-            return null;
-        }
-        File file = new File(tmpRes.getFile());
-        return mapper.readValue(file, TTJSONInputModel.class);
+        InputStream modelFileStream = getClass().getResourceAsStream('/'+fileName);
+        return mapper.readValue(modelFileStream, TTJSONInputModel.class);
     }
 
-    public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName) throws IOException {
+    public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName, boolean isResourceFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+
+        if (isResourceFile) {
+            InputStream modelFileStream = getClass().getResourceAsStream('/'+fileName);
+            return mapper.readValue(modelFileStream, TTJSONMultiLevelInputModel.class);
+        }
 
         File file = new File(fileName);
         return mapper.readValue(file, TTJSONMultiLevelInputModel.class);
