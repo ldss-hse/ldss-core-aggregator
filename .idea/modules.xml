@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/lingvo-dss.iml" filepath="$PROJECT_DIR$/lingvo-dss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lingvo-dss.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lingvo-dss.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lingvo-dss.test.iml" filepath="$PROJECT_DIR$/.idea/modules/lingvo-dss.test.iml" />
     </modules>
   </component>
 </project>

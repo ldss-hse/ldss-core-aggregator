@@ -1,6 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.1'
-    id "org.sonarqube" version "2.2"
+//    id "org.sonarqube" version "2.2"
 }
 
 apply plugin: 'java'
@@ -28,15 +28,15 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile(
+    implementation(
             [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.1'],
             [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.1'],
             [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1'],
             [group: 'commons-cli', name: 'commons-cli', version: '1.4']
     )
 
-    testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:2.+"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.+"
 }
 // end:dependencies[]
 
@@ -52,22 +52,22 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 
-sonarqube {
-    properties {
-        property "sonar.projectName", "Linguistic Decision Support System"
-        property "sonar.projectKey", "dss.lingvo"
-        property "sonar.exclusions", "src/main/java/dss/lingvo/samples/*.java, src/main/java/dss/lingvo/utils/models/*.java"
-    }
-}
+//sonarqube {
+//    properties {
+//        property "sonar.projectName", "Linguistic Decision Support System"
+//        property "sonar.projectKey", "dss.lingvo"
+//        property "sonar.exclusions", "src/main/java/dss/lingvo/samples/*.java, src/main/java/dss/lingvo/utils/models/*.java"
+//    }
+//}
 
-jacocoTestReport {
-    group = "Reporting"
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
-    }
-}
+//jacocoTestReport {
+//    group = "Reporting"
+//    reports {
+//        xml.enabled true
+//        csv.enabled false
+//        html.destination "${buildDir}/reports/coverage"
+//    }
+//}
 
 run {
     if (project.hasProperty("appArgs")) {
@@ -75,6 +75,6 @@ run {
     }
 }
 
-task testCov
-testCov.dependsOn test
-testCov.dependsOn jacocoTestReport
+//task testCov
+//testCov.dependsOn test
+//testCov.dependsOn jacocoTestReport
