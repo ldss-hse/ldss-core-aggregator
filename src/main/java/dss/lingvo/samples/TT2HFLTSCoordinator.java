@@ -67,20 +67,21 @@ public class TT2HFLTSCoordinator {
         // now how to work with numbers
         int targetScaleSize = 7;
 
-        List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(0.78f, 5);
+        final float numeric_assessment = 0.78f;
+        List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numeric_assessment, 5);
         float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
         TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, 5);
-        System.out.println(resTuple);
+        System.out.printf("Translating %f to 2-tuple: %s\n", numeric_assessment, resTuple.toString());
 
         float[] expDistr = {0.8f, 0.2f};
         float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
-        System.out.println(resVector);
+        System.out.println(Arrays.toString(resVector));
 
         float sum = 0f;
-        for (int i = 0; i < resVector.length; i++) {
-            sum += resVector[i];
+        for (float v : resVector) {
+            sum += v;
         }
-        System.out.println(sum);
+        System.out.printf("Sum of weights should be 1. Actual sum is: %f", sum);
 
         //---------------------
         // Enable multilevel task solving
@@ -152,6 +153,7 @@ public class TT2HFLTSCoordinator {
             }
         }));
 
+        System.out.println("\n\n\n[MULTILEVEL] [REPORT] Aggregation results");
         for (Pair<String, TT2HFLTS> stringTT2HFLTSPair: resZippedVec){
             TTAlternativeModel altInstance = model.getAlternatives()
                     .stream()
