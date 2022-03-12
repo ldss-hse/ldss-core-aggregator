@@ -26,3 +26,7 @@ Example launch:
 2. [Optional] build the jar with sources: `./gradlew sourcesJar`
 3. Both jars are placed in **build/libs** folder. *lingvo-dss-all.jar* represents core logic with dependencies.
 While *lingvo-dss-sources.jar* contains sources of the library.
+4. Run the jar on the given description:
+   ```bash
+   java -jar .\build\libs\lingvo-dss-all.jar -i .\src\main\resources\description_multilevel.json
+   ```

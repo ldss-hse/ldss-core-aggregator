@@ -1,5 +1,6 @@
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.12'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'application'
 }
 
@@ -33,43 +34,8 @@ application {
     mainClassName = javaMainClass
 }
 
-
-// -------------------------------------------OLD-----------------------
-
-
-
-
-
-jar {
-    baseName = 'lingvo-dss'
-    version = '0.1.0'
-}
-
-
-
-task runWithExec(type: Exec) {
-    dependsOn build
-    group = "Execution"
-    description = "Run the main class with ExecTask"
-    commandLine "java", "-classpath", sourceSets.main.runtimeClasspath.getAsPath(), javaMainClass
-}
-
-
-// end:dependencies[]
-
-jar {
+shadowJar {
     manifest {
-        attributes 'Main-Class': 'dss.lingvo.Main'
-    }
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-run {
-    if (project.hasProperty("appArgs")) {
-        args Eval.me(appArgs)
+        attributes 'Main-Class': javaMainClass
     }
 }
