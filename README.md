@@ -2,17 +2,23 @@
  
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=dss.lingvo)](https://sonarqube.com/dashboard/index?id=dss.lingvo)
 
-[LDSS-6] enable experts weights calculation
-[LDSS-7] enable paddy corner case
-
-**All instructions are applicable for macOS only**
 
 ### How to run
 
 You need to provide the path to the input JSON file, containing problem description
 
 Example launch:
-`./gradlew run -PappArgs="['-i', 'PATH_TO_PROJECT_ROOT/src/main/resources/description_multilevel.json']"`
+
+1. macOS:
+
+   ```bash
+   ./gradlew run -PappArgs="['-i', 'PATH_TO_PROJECT_ROOT/src/main/resources/description_multilevel.json']"
+   ```
+
+2. Windows:
+   ```bash
+   .\gradlew run --args='-i PATH_TO_PROJECT_ROOT\src\main\resources\description_multilevel.json'
+   ```
 
 ### How to use as a jar
 

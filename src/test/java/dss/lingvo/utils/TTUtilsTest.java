@@ -62,7 +62,7 @@ public class TTUtilsTest {
         TTNormalizedTranslator.setScaleStore(scaleStore);
 
         ttjsonReader = TTJSONUtils.getInstance();
-        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json", true);
         TTNormalizedTranslator.registerScalesBatch(model.getScales());
     }
 

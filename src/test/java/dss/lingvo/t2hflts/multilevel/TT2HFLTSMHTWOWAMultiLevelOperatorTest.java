@@ -28,7 +28,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
     @BeforeClass
     public static void runOnceBeforeClass() throws IOException {
         TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
-        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json");
+        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json", true);
         TTNormalizedTranslator.registerScalesBatch(model.getScales());
         all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
         targetScaleSize = 7;

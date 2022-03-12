@@ -1,7 +1,23 @@
 plugins {
-//    id 'com.github.johnrengelman.shadow' version '2.0.1'
     id 'org.openjfx.javafxplugin' version '0.0.12'
-//    id "org.sonarqube" version "2.2"
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.1'],
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.1'],
+            [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1'],
+            [group: 'commons-cli', name: 'commons-cli', version: '1.4'],
+            [group: 'org.openjfx', name: 'javafx-base', version: '12'],
+    )
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:2.+"
 }
 
 javafx {
@@ -9,41 +25,36 @@ javafx {
     modules = [ 'javafx.base' ]
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'application'
-apply plugin: "jacoco"
-
-mainClassName = 'dss.lingvo.Main'
-
-// tag:repositories[]
-repositories {
-    jcenter()
+ext {
+    javaMainClass = 'dss.lingvo.Main'
 }
-// end:repositories[]
 
-// tag::jar[]
+application {
+    mainClassName = javaMainClass
+}
+
+
+// -------------------------------------------OLD-----------------------
+
+
+
+
+
 jar {
     baseName = 'lingvo-dss'
     version = '0.1.0'
 }
-// end::jar[]
 
-// tag:dependencies[]
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
-dependencies {
-    implementation(
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.4.1'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.4.1'],
-            [group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.4.1'],
-            [group: 'commons-cli', name: 'commons-cli', version: '1.4']
-    )
 
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.mockito:mockito-core:2.+"
+task runWithExec(type: Exec) {
+    dependsOn build
+    group = "Execution"
+    description = "Run the main class with ExecTask"
+    commandLine "java", "-classpath", sourceSets.main.runtimeClasspath.getAsPath(), javaMainClass
 }
+
+
 // end:dependencies[]
 
 jar {
@@ -57,30 +68,8 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-
-//sonarqube {
-//    properties {
-//        property "sonar.projectName", "Linguistic Decision Support System"
-//        property "sonar.projectKey", "dss.lingvo"
-//        property "sonar.exclusions", "src/main/java/dss/lingvo/samples/*.java, src/main/java/dss/lingvo/utils/models/*.java"
-//    }
-//}
-
-//jacocoTestReport {
-//    group = "Reporting"
-//    reports {
-//        xml.enabled true
-//        csv.enabled false
-//        html.destination "${buildDir}/reports/coverage"
-//    }
-//}
-
 run {
     if (project.hasProperty("appArgs")) {
         args Eval.me(appArgs)
     }
 }
-
-//task testCov
-//testCov.dependsOn test
-//testCov.dependsOn jacocoTestReport

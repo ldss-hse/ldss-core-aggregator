@@ -103,7 +103,7 @@ public class TT2HFLTSCoordinator {
         TT2HFLTS rr = op.calculate(ll, ww, 9);
 
 
-        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFilePath);
+        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFilePath, false);
         List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
 
         // Step 1. Aggregate by abstraction level
