@@ -195,20 +195,7 @@ public class TTUtils {
         return tmpModel;
     }
 
-    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize) {
-        TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
-        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
-        ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());
-        ttjsonOutputModel.setScales(ttjsonModel.getScales());
-        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
-        ttjsonOutputModel.setAbstractionLevelWeights(ttjsonModel.getAbstractionLevelWeights());
-        ttjsonOutputModel.setExpertWeightsRule(ttjsonModel.getExpertWeightsRule());
-        ttjsonOutputModel.setExperts(ttjsonModel.getExperts());
-        ttjsonOutputModel.setAlternativesOrdered(TTUtils.prepareJSONForAggregationEstimates(altOverall, ttjsonModel, targetScaleSize));
-        return ttjsonOutputModel;
-    }
-
-    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONMultiLevelInputModel ttjsonModel, int targetScaleSize) {
+    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTCommonInputModel ttjsonModel, int targetScaleSize) {
         TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
         ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
         ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());
