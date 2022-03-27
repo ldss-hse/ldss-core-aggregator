@@ -9,6 +9,7 @@ import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,9 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
     @BeforeClass
     public static void runOnceBeforeClass() throws IOException {
         TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
-        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json", true);
+        File multilevelDescriptionFile = new File("description_multilevel.json");
+
+        model = ttjsonReader.readJSONMultiLevelDescription(multilevelDescriptionFile, true);
         TTNormalizedTranslator.registerScalesBatch(model.getScales());
         all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
         targetScaleSize = 7;

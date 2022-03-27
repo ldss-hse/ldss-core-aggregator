@@ -67,15 +67,23 @@ public class TTNormalizedTranslator {
             float b = range[1];
             float d = range[2];
             float c = range[3];
-            Float tmp = null;
+            float tmp;
             if ((a > estimation) || (c < estimation)) {
                 tmp = 0f;
             } else if (estimation <= b) {
-                tmp = (estimation - a) / (b - a);
+                if ((b - a) == 0) {
+                    tmp = 0f;
+                } else {
+                    tmp = (estimation - a) / (b - a);
+                }
             } else if (estimation <= d) {
                 tmp = 1f;
             } else {
-                tmp = (c - estimation) / (c - d);
+                if ((c - d) == 0) {
+                    tmp = 0f;
+                } else {
+                    tmp = (c - estimation) / (c - d);
+                }
             }
             resFuzzySet.add(tmp);
         }

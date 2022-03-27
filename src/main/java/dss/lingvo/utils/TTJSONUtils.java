@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 
 public class TTJSONUtils {
     private static TTJSONUtils ttjsonReader = new TTJSONUtils();
@@ -23,22 +24,21 @@ public class TTJSONUtils {
         return mapper.readValue(modelFileStream, TTJSONInputModel.class);
     }
 
-    public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(String fileName, boolean isResourceFile) throws IOException {
+    public TTJSONMultiLevelInputModel readJSONMultiLevelDescription(File file, boolean isResourceFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         if (isResourceFile) {
-            InputStream modelFileStream = getClass().getResourceAsStream('/'+fileName);
+            InputStream modelFileStream = getClass().getResourceAsStream('/'+file.toString());
             return mapper.readValue(modelFileStream, TTJSONMultiLevelInputModel.class);
         }
 
-        File file = new File(fileName);
         return mapper.readValue(file, TTJSONMultiLevelInputModel.class);
     }
 
-    public void writeResultToJSON(String fileName, TTJSONOutputModel jsonString) throws IOException {
+    public void writeResultToJSON(Path filePath, TTJSONOutputModel jsonString) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
 
         // Convert object to JSON string and save into a file directly
-        mapper.writeValue(new File(fileName), jsonString);
+        mapper.writeValue(new File(filePath.toString()), jsonString);
     }
 }

@@ -7,7 +7,6 @@ import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWOWAOperator;
 import dss.lingvo.t2hflts.multilevel.TT2HFLTSMHTWOWAMultiLevelOperator;
 import dss.lingvo.utils.TTJSONUtils;
-import dss.lingvo.utils.TTReportUtils;
 import dss.lingvo.utils.TTUtils;
 import dss.lingvo.utils.models.input.TTAlternativeModel;
 import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
@@ -15,16 +14,18 @@ import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTJSONOutputModel;
 import javafx.util.Pair;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TT2HFLTSCoordinator {
-    private TTUtils log = TTUtils.getInstance();
+    private final TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
 
-    public void go(String inputFilePath) throws IOException {
-        TTJSONUtils ttjsonReader = TTJSONUtils.getInstance();
+    private void processSimpleCase(File outputDirectory) throws IOException {
         TTJSONInputModel ttjsonModel = ttjsonReader.readJSONDescription("description_from_article.json");
 
         if (ttjsonModel == null) {
@@ -34,7 +35,6 @@ public class TT2HFLTSCoordinator {
         // now we need to create all instances
         // 1. register all scales
         TTNormalizedTranslator.registerScalesBatch(ttjsonModel.getScales());
-
 
         // MHTWOWA example
 
@@ -57,13 +57,15 @@ public class TT2HFLTSCoordinator {
 
         // now need to make the calculation for every alternative
         TT2HFLTSMHTWOWAOperator tt2HFLTSMHTWOWAOperator = new TT2HFLTSMHTWOWAOperator();
-        List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(numAlternatives,
-                numExperts, p, w, aggEstAll, 7);
+        List<TT2HFLTS> altOverall = tt2HFLTSMHTWOWAOperator.calculate(numAlternatives, numExperts, p, w, aggEstAll, 7);
 
         TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altOverall, ttjsonModel, 7);
         // now output results
-        TTJSONUtils.getInstance().writeResultToJSON("build/resources/result.json", res);
+        Path outputJSONFilePath = Paths.get(outputDirectory.toString(), "result_simple.json");
+        TTJSONUtils.getInstance().writeResultToJSON(outputJSONFilePath, res);
+    }
 
+    private void processNumericSample() {
         // now how to work with numbers
         int targetScaleSize = 7;
 
@@ -72,7 +74,9 @@ public class TT2HFLTSCoordinator {
         float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
         TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, 5);
         System.out.printf("Translating %f to 2-tuple: %s\n", numeric_assessment, resTuple.toString());
+    }
 
+    private void processweightsGenerationSample() {
         float[] expDistr = {0.8f, 0.2f};
         float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
         System.out.println(Arrays.toString(resVector));
@@ -82,11 +86,10 @@ public class TT2HFLTSCoordinator {
             sum += v;
         }
         System.out.printf("Sum of weights should be 1. Actual sum is: %f", sum);
+    }
 
-        //---------------------
-        // Enable multilevel task solving
-
-        float [] ww = {0.33f,0.33f,0.33f};
+    private void processMHTWASample() {
+        float[] ww = {0.33f, 0.33f, 0.33f};
         List<TTTuple> l = new ArrayList<>();
         l.add(new TTTuple("p", 9, 0f, 3));
         TT2HFLTS el1 = new TT2HFLTS(l);
@@ -102,66 +105,63 @@ public class TT2HFLTSCoordinator {
         ll.add(el3);
         TT2HFLTSMHTWAOperator op = new TT2HFLTSMHTWAOperator();
         TT2HFLTS rr = op.calculate(ll, ww, 9);
+    }
 
+    private void processMultiLevelAdvancedSample(File inputFile, File outputDirectory) throws IOException {
+        int targetScaleSize = 7;
 
-        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFilePath, false);
+        TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFile, false);
         List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
 
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator
-                .aggregateByAbstractionLevel(model.getCriteria(),
-                        model.getAbstractionLevels(),
-                        all,
-                        targetScaleSize);
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize);
 
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
-                .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
-                        model.getAlternatives().size(),
-                        model.getExperts().size(),
-                        allByLevel);
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator.transposeByAbstractionLevel(model.getAbstractionLevels().size(), model.getAlternatives().size(), model.getExperts().size(), allByLevel);
 
         float[] a = new float[model.getExpertWeightsRule().values().size()];
         float curMax = 0f;
-        for (Map.Entry<String, Float> e: model.getExpertWeightsRule().entrySet()){
-            if (e.getKey().equals("1")){
+        for (Map.Entry<String, Float> e : model.getExpertWeightsRule().entrySet()) {
+            if (e.getKey().equals("1")) {
                 curMax = e.getValue();
                 break;
             }
         }
         a[0] = curMax;
-        a[1] = 1-curMax;
-        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator
-                .aggregateByExpert(model.getAbstractionLevels().size(),
-                        model.getAlternatives().size(),
-                        7,
-                        allByExpert,
-                        a);
+        a[1] = 1 - curMax;
+        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByExpert(model.getAbstractionLevels().size(), model.getAlternatives().size(), 7, allByExpert, a);
 
-        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator
-                .aggregateFinalAltEst(7,
-                        altToLevel);
+        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateFinalAltEst(7, altToLevel);
 
-        List<Pair<String, TT2HFLTS>> resZippedVec = IntStream.range(0, altVec.size())
-                .mapToObj(i -> new Pair<>(model.getAlternatives().get(i).getAlternativeID(), altVec.get(i)))
-                .collect(Collectors.toList());
+        // all below is just processing
 
-        Collections.sort(resZippedVec, Collections.reverseOrder(new Comparator<Pair<String, TT2HFLTS>>() {
-            @Override
-            public int compare(Pair<String, TT2HFLTS> o1, Pair<String, TT2HFLTS> o2) {
-                return TTUtils.compareTT2HFLTS(o1.getValue(), o2.getValue());
-            }
-        }));
+        // saving to file
+        TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altVec, model, 7);
+        Path outputJSONFilePath = Paths.get(outputDirectory.toString(), "result.json");
+        TTJSONUtils.getInstance().writeResultToJSON(outputJSONFilePath, res);
+
+
+        // printing to console
+        List<Pair<String, TT2HFLTS>> resZippedVec = IntStream.range(0, altVec.size()).mapToObj(i -> new Pair<>(model.getAlternatives().get(i).getAlternativeID(), altVec.get(i))).collect(Collectors.toList());
+
+        resZippedVec.sort(Collections.reverseOrder((o1, o2) -> TTUtils.compareTT2HFLTS(o1.getValue(), o2.getValue())));
 
         System.out.println("\n\n\n[MULTILEVEL] [REPORT] Aggregation results");
-        for (Pair<String, TT2HFLTS> stringTT2HFLTSPair: resZippedVec){
-            TTAlternativeModel altInstance = model.getAlternatives()
-                    .stream()
-                    .filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID()
-                            .equals(stringTT2HFLTSPair.getKey()))
-                    .findFirst()
-                    .orElse(null);
+        for (Pair<String, TT2HFLTS> stringTT2HFLTSPair : resZippedVec) {
+            TTAlternativeModel altInstance = model.getAlternatives().stream().filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID().equals(stringTT2HFLTSPair.getKey())).findFirst().orElse(null);
             System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName());
         }
+    }
+
+    public void go(File inputFile, File outputDirectory) throws IOException {
+        processSimpleCase(outputDirectory);
+
+        processNumericSample();
+
+        processweightsGenerationSample();
+
+        processMHTWASample();
+
+        processMultiLevelAdvancedSample(inputFile, outputDirectory);
     }
 }
