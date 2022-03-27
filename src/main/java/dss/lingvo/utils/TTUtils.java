@@ -6,6 +6,7 @@ import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
 import dss.lingvo.t2hflts.TT2HFLTSMHTWAOperator;
 import dss.lingvo.utils.models.input.*;
+import dss.lingvo.utils.models.input.common.TTCommonInputModel;
 import dss.lingvo.utils.models.input.multilevel.TTJSONMultiLevelInputModel;
 import dss.lingvo.utils.models.input.singlelevel.TTJSONInputModel;
 import dss.lingvo.utils.models.output.TTAlternativeEstimationModel;
@@ -154,7 +155,7 @@ public class TTUtils {
         return aggEstAll;
     }
 
-    private static List<TTAlternativeEstimationModel> prepareJSONForAggregationEstimates(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize) {
+    private static List<TTAlternativeEstimationModel> prepareJSONForAggregationEstimates(List<TT2HFLTS> altOverall, TTCommonInputModel ttjsonModel, int targetScaleSize) {
         // now just to sort
         List<TT2HFLTS> sortedAltOverall = TTUtils.sortTT2HFLTS(altOverall, true);
 
@@ -195,6 +196,19 @@ public class TTUtils {
     }
 
     public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONInputModel ttjsonModel, int targetScaleSize) {
+        TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
+        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
+        ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());
+        ttjsonOutputModel.setScales(ttjsonModel.getScales());
+        ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
+        ttjsonOutputModel.setAbstractionLevelWeights(ttjsonModel.getAbstractionLevelWeights());
+        ttjsonOutputModel.setExpertWeightsRule(ttjsonModel.getExpertWeightsRule());
+        ttjsonOutputModel.setExperts(ttjsonModel.getExperts());
+        ttjsonOutputModel.setAlternativesOrdered(TTUtils.prepareJSONForAggregationEstimates(altOverall, ttjsonModel, targetScaleSize));
+        return ttjsonOutputModel;
+    }
+
+    public static TTJSONOutputModel prepareAllResultsForJSON(List<TT2HFLTS> altOverall, TTJSONMultiLevelInputModel ttjsonModel, int targetScaleSize) {
         TTJSONOutputModel ttjsonOutputModel = new TTJSONOutputModel();
         ttjsonOutputModel.setAbstractionLevels(ttjsonModel.getAbstractionLevels());
         ttjsonOutputModel.setAlternatives(ttjsonModel.getAlternatives());

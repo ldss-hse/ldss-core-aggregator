@@ -14,6 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -62,7 +63,9 @@ public class TTUtilsTest {
         TTNormalizedTranslator.setScaleStore(scaleStore);
 
         ttjsonReader = TTJSONUtils.getInstance();
-        model = ttjsonReader.readJSONMultiLevelDescription("description_multilevel.json", true);
+
+        File multilevelDescriptionFile = new File("description_multilevel.json");
+        model = ttjsonReader.readJSONMultiLevelDescription(multilevelDescriptionFile, true);
         TTNormalizedTranslator.registerScalesBatch(model.getScales());
     }
 

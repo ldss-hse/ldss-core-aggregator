@@ -12,12 +12,12 @@ Example launch:
 1. macOS:
 
    ```bash
-   ./gradlew run -PappArgs="['-i', 'PATH_TO_PROJECT_ROOT/src/main/resources/description_multilevel.json', '-o', 'run.log']"
+   ./gradlew run -PappArgs="['-i', 'PATH_TO_PROJECT_ROOT/src/main/resources/description_multilevel.json', '-o', 'artifacts']"
    ```
 
 2. Windows:
    ```bash
-   .\gradlew run --args='-i PATH_TO_PROJECT_ROOT\src\main\resources\description_multilevel.json -o run.log'
+   .\gradlew run --args='-i PATH_TO_PROJECT_ROOT\src\main\resources\description_multilevel.json -o artifacts'
    ```
 
 ### How to use as a jar
@@ -28,5 +28,5 @@ Example launch:
 While *lingvo-dss-sources.jar* contains sources of the library.
 4. Run the jar on the given description:
    ```bash
-   java -jar .\build\libs\lingvo-dss-all.jar -i .\src\main\resources\description_multilevel.json -o run.log
+   java -jar .\build\libs\lingvo-dss-all.jar -i .\src\main\resources\description_multilevel.json -o artifacts
    ```
