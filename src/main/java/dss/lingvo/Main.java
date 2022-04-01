@@ -31,6 +31,7 @@ public class Main {
             cmd = parser.parse(options, args);
         } catch (ParseException e) {
             System.out.println(e.getMessage());
+            System.out.println("[ERROR] Incorrect list of passed arguments!");
             formatter.printHelp("utility-name", options);
 
             System.exit(1);
@@ -41,7 +42,7 @@ public class Main {
 
         File inputFile  = new File(inputFilePathRaw);
         if (!inputFile.exists()) {
-            System.out.println("Specified file with task description does not exist. Specify a real description");
+            System.out.println("[ERROR] Specified file with task description does not exist. Specify a real description!");
             System.exit(1);
         }
 
@@ -54,7 +55,7 @@ public class Main {
 
 
         if (outputDirectory.exists() && !outputDirectory.isDirectory()) {
-            System.out.println("The path provided as an output directory is not a directory. Specify a real folder.");
+            System.out.println("[ERROR] The path provided as an output directory is not a directory. Specify a real folder!");
             System.exit(1);
             return;
         }
