@@ -107,7 +107,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
         for (int expertIndex = 0; expertIndex < expertsSize; expertIndex++) {
             for (int altIndex = 0; altIndex <altSize; altIndex++) {
                 for (int levelIndex = 0; levelIndex < levelsSize; levelIndex++) {
-                    TT2HFLTS est = estGroupedByAlternatives.get(expertIndex).get(altIndex).get(expertIndex);
+                    TT2HFLTS est = estGroupedByAlternatives.get(expertIndex).get(altIndex).get(levelIndex);
                     levelEstimates.get(levelIndex).get(altIndex).set(expertIndex, est);
                 }
             }
