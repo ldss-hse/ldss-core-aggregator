@@ -1,6 +1,5 @@
 package dss.lingvo.utils;
 
-import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
@@ -250,7 +249,10 @@ public class TTUtils {
 
     public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromMultiLevelJSONModel(TTJSONMultiLevelInputModel ttjsonModel, int targetScaleSize) {
         Map<String, List<TTExpertEstimationsModel>> estimations = ttjsonModel.getEstimations();
-        Map<String, Integer> averages = getAverageForEachNumericCriterion(estimations);
+        Map<String, Double> averages = getAverageForEachNumericCriterion(
+                estimations,
+                ttjsonModel.getCriteria(),
+                ttjsonModel.getScales());
         Map<String, List<TTCriteriaModel>> criteria = ttjsonModel.getCriteria();
         List<TTAbstractionLevelModel> levels = ttjsonModel.getAbstractionLevels();
         List<ArrayList<ArrayList<TT2HFLTS>>> expertsEstimationsList = new ArrayList<>();
@@ -274,13 +276,27 @@ public class TTUtils {
                                 .orElse(null);
 
                         TT2HFLTS res;
-                        if (critEst.getQualitative()) {
+                        TTCriteriaModel criterion = getCriterion(criteriaModel.getCriteriaID(), criteria);
+                        TTScaleModel scale = getScale(critEst.getScaleID(), ttjsonModel.getScales());
+
+                        boolean isRequired2TupleTransformation = false;
+                        if (criterion.isQualitative() && scale.getValues() == null) {
                             // transform it to 2tuple as usual linguistic info
                             res = transformToTTHFLTS(ttjsonModel.getScales(), critEst.getScaleID(), critEst.getEstimation());
                         } else {
                             // transform numeric to tuple and then to TTHFLTS
-                            // however, first of all we need to normalize the values
-                            float numericEstimation = Integer.parseInt(critEst.getEstimation().get(0)) / ((float) averages.get(critEst.getCriteriaID()));
+                            // however, first we need to normalize the values
+                            Float valueToRemember;
+                            if (criterion.isQualitative() && scale.getValues() != null) {
+                                // transform it to number according to the specified mapping
+                                valueToRemember = findReplacingCrispLinguisticValue(
+                                        critEst.getEstimation().get(0),
+                                        scale);
+                            } else {
+                                valueToRemember = Float.parseFloat(critEst.getEstimation().get(0));
+                            }
+
+                            float numericEstimation = valueToRemember / (averages.get(critEst.getCriteriaID()).floatValue());
                             List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
                             float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
                             TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, targetScaleSize);
@@ -298,29 +314,75 @@ public class TTUtils {
         return expertsEstimationsList;
     }
 
-    private static Map<String, Integer> getAverageForEachNumericCriterion(Map<String, List<TTExpertEstimationsModel>> estimationsMap) {
-        Map<String, List<Integer>> averages = new TreeMap<>();
-        Map<String, Integer> sumFinal = new TreeMap<>();
+    private static Map<String, Double> getAverageForEachNumericCriterion(
+            Map<String, List<TTExpertEstimationsModel>> estimationsMap,
+            Map<String, List<TTCriteriaModel>> criteria,
+            List<TTScaleModel> scales
+    ) {
+        Map<String, List<Float>> averages = new TreeMap<>();
+        Map<String, Double> sumFinal = new TreeMap<>();
         for (Map.Entry<String, List<TTExpertEstimationsModel>> entry : estimationsMap.entrySet()) {
             for (TTExpertEstimationsModel ttExpertEstimationsModel : entry.getValue()) {
                 for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel : ttExpertEstimationsModel.getCriteria2Estimation()) {
-                    if (!ttCriteriaEstimationsModel.getQualitative()) {
-                        List<Integer> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
-                        if (averList == null) {
-                            averList = new ArrayList<>();
-                        }
-                        averList.add(Integer.parseInt(ttCriteriaEstimationsModel.getEstimation().get(0)));
-                        averages.put(ttCriteriaEstimationsModel.getCriteriaID(), averList);
+                    TTCriteriaModel criterion = getCriterion(ttCriteriaEstimationsModel.getCriteriaID(), criteria);
+                    TTScaleModel scale = getScale(ttCriteriaEstimationsModel.getScaleID(), scales);
+                    if (criterion != null && criterion.isQualitative() && scale.getValues() == null) {
+                        // this is a 2-tuple that needs different pre-processing
+                        continue;
                     }
+
+                    List<Float> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
+                    if (averList == null) {
+                        averList = new ArrayList<>();
+                    }
+
+                    Float valueToRemember;
+                    if (scale != null && scale.getValues() != null) {
+                        // this is a linguistic variable that has to be replaced with a numeric value
+                        valueToRemember = findReplacingCrispLinguisticValue(
+                                ttCriteriaEstimationsModel.getEstimation().get(0),
+                                scale);
+                    } else {
+                        // this is a numeric value that should be parsed from string
+                        valueToRemember = Float.parseFloat(ttCriteriaEstimationsModel.getEstimation().get(0));
+                    }
+
+                    averList.add(valueToRemember);
+
+                    averages.put(ttCriteriaEstimationsModel.getCriteriaID(), averList);
                 }
 
             }
         }
-        for (Map.Entry<String, List<Integer>> entry : averages.entrySet()) {
-            sumFinal.put(entry.getKey(), entry.getValue().stream().mapToInt(Integer::intValue).sum());
+
+        for (Map.Entry<String, List<Float>> entry : averages.entrySet()) {
+            sumFinal.put(entry.getKey(), entry.getValue().stream().mapToDouble(Float::floatValue).sum());
         }
         return sumFinal;
+    }
 
+    private static TTCriteriaModel getCriterion(String criterionID, Map<String, List<TTCriteriaModel>> criteria) {
+        for (Map.Entry<String, List<TTCriteriaModel>> entry : criteria.entrySet()) {
+            for (TTCriteriaModel criteriaModel : entry.getValue()) {
+                if (criteriaModel.getCriteriaID().equals(criterionID)) {
+                    return criteriaModel;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static TTScaleModel getScale(String scaleID, List<TTScaleModel> scales) {
+        for (TTScaleModel scaleModel : scales) {
+            if (scaleModel.getScaleID().equals(scaleID)) {
+                return scaleModel;
+            }
+        }
+        return null;
+    }
+
+    private static Float findReplacingCrispLinguisticValue(String label, TTScaleModel scale) {
+        return scale.getValues().get(scale.getLabels().indexOf(label));
     }
 
     public static List<TTCriteriaModel> getOrderedCriteriaList(Map<String, List<TTCriteriaModel>> criteria,
