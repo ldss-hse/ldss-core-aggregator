@@ -12,7 +12,11 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class TT2HFLTSMHTWOWAMultiLevelOperator {
-    public List<ArrayList<ArrayList<TT2HFLTS>>> aggregateByAbstractionLevel(Map<String, List<TTCriteriaModel>> criteria, List<TTAbstractionLevelModel> abstractionLevels, List<ArrayList<ArrayList<TT2HFLTS>>> all, int targetScaleSize) {
+    public List<ArrayList<ArrayList<TT2HFLTS>>> aggregateByAbstractionLevel(Map<String, List<TTCriteriaModel>> criteria,
+                                                                            List<TTAbstractionLevelModel> abstractionLevels,
+                                                                            List<ArrayList<ArrayList<TT2HFLTS>>> all,
+                                                                            int targetScaleSize, Map<String,
+            List<Float>> criteriaWeightsPerGroup) {
         List<TTCriteriaModel> orderedCriteria = TTUtils.getOrderedCriteriaList(criteria, abstractionLevels);
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
         List<ArrayList<ArrayList<TT2HFLTS>>> expEstimates = new ArrayList<>();
@@ -36,8 +40,20 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
                     for (int i : indices) {
                         tmp.add(singleAltEst.get(i));
                     }
-                    // weights are currently equal
-                    float[] weights = getEqualWeights(tmp.size());
+
+                    float[] weights;
+                    if (criteriaWeightsPerGroup == null ||
+                            criteriaWeightsPerGroup.get(ttAbstractionLevelModel.getAbstractionLevelID()) == null) {
+                        // weights are equal if not set in JSON
+                        weights = getEqualWeights(tmp.size());
+                    } else {
+                        List<Float> jsonWeights = criteriaWeightsPerGroup.get(ttAbstractionLevelModel.getAbstractionLevelID());
+                        weights = new float[jsonWeights.size()];
+                        int i = 0;
+                        for (Float f : jsonWeights) {
+                            weights[i++] = (f != null ? f : Float.NaN);
+                        }
+                    }
                     TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(tmp, weights, targetScaleSize);
                     levelEstimates.add(aggRes);
                 }

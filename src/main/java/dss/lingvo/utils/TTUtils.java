@@ -299,9 +299,11 @@ public class TTUtils {
                             TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
 
                             float numericEstimation = valueToRemember / (averages.get(critEst.getCriteriaID()).floatValue());
+
                             List<Float> fSet = translator.getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
                             float resTranslation = translator.getTranslationFromFuzzySet(fSet);
                             TTTuple resTuple = translator.getTTupleForNumericTranslation(resTranslation, targetScaleSize);
+
                             List<TTTuple> tmpL = new ArrayList<>();
                             tmpL.add(resTuple);
                             res = new TT2HFLTS(tmpL);
@@ -322,7 +324,6 @@ public class TTUtils {
             List<TTScaleModel> scales
     ) {
         Map<String, List<Float>> averages = new TreeMap<>();
-        Map<String, Double> sumFinal = new TreeMap<>();
         for (Map.Entry<String, List<TTExpertEstimationsModel>> entry : estimationsMap.entrySet()) {
             for (TTExpertEstimationsModel ttExpertEstimationsModel : entry.getValue()) {
                 for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel : ttExpertEstimationsModel.getCriteria2Estimation()) {
@@ -359,8 +360,10 @@ public class TTUtils {
             }
         }
 
+        Map<String, Double> sumFinal = new TreeMap<>();
         for (Map.Entry<String, List<Float>> entry : averages.entrySet()) {
-            sumFinal.put(entry.getKey(), entry.getValue().stream().mapToDouble(Float::floatValue).sum());
+            double normalized_value = Math.sqrt(entry.getValue().stream().mapToDouble(e -> Math.pow(e, 2)).sum());
+            sumFinal.put(entry.getKey(), normalized_value);
         }
         return sumFinal;
     }
