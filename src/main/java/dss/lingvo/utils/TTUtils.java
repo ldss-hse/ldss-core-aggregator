@@ -279,15 +279,15 @@ public class TTUtils {
                         TTCriteriaModel criterion = getCriterion(criteriaModel.getCriteriaID(), criteria);
                         TTScaleModel scale = getScale(critEst.getScaleID(), ttjsonModel.getScales());
 
-                        boolean isRequired2TupleTransformation = false;
-                        if (criterion.isQualitative() && scale.getValues() == null) {
+                        if (isQualitativeAssessment(criterion, critEst) &&
+                                !isCrispQualitativeAssessment(scale)) {
                             // transform it to 2tuple as usual linguistic info
                             res = transformToTTHFLTS(ttjsonModel.getScales(), critEst.getScaleID(), critEst.getEstimation());
                         } else {
                             // transform numeric to tuple and then to TTHFLTS
                             // however, first we need to normalize the values
                             Float valueToRemember;
-                            if (criterion.isQualitative() && scale.getValues() != null) {
+                            if (isQualitativeAssessment(criterion, critEst) && isCrispQualitativeAssessment(scale)) {
                                 // transform it to number according to the specified mapping
                                 valueToRemember = findReplacingCrispLinguisticValue(
                                         critEst.getEstimation().get(0),
@@ -296,10 +296,12 @@ public class TTUtils {
                                 valueToRemember = Float.parseFloat(critEst.getEstimation().get(0));
                             }
 
+                            TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
+
                             float numericEstimation = valueToRemember / (averages.get(critEst.getCriteriaID()).floatValue());
-                            List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
-                            float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
-                            TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, targetScaleSize);
+                            List<Float> fSet = translator.getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
+                            float resTranslation = translator.getTranslationFromFuzzySet(fSet);
+                            TTTuple resTuple = translator.getTTupleForNumericTranslation(resTranslation, targetScaleSize);
                             List<TTTuple> tmpL = new ArrayList<>();
                             tmpL.add(resTuple);
                             res = new TT2HFLTS(tmpL);
@@ -326,7 +328,9 @@ public class TTUtils {
                 for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel : ttExpertEstimationsModel.getCriteria2Estimation()) {
                     TTCriteriaModel criterion = getCriterion(ttCriteriaEstimationsModel.getCriteriaID(), criteria);
                     TTScaleModel scale = getScale(ttCriteriaEstimationsModel.getScaleID(), scales);
-                    if (criterion != null && criterion.isQualitative() && scale.getValues() == null) {
+
+                    if (isQualitativeAssessment(criterion, ttCriteriaEstimationsModel) &&
+                            !isCrispQualitativeAssessment(scale)) {
                         // this is a 2-tuple that needs different pre-processing
                         continue;
                     }
@@ -383,6 +387,21 @@ public class TTUtils {
 
     private static Float findReplacingCrispLinguisticValue(String label, TTScaleModel scale) {
         return scale.getValues().get(scale.getLabels().indexOf(label));
+    }
+
+    private static boolean isQualitativeAssessment(TTCriteriaModel criterion,
+                                                   TTCriteriaEstimationsModel ttCriteriaEstimationsModel) {
+        // in new format qualitative flag is described in criteria
+        if (criterion != null && criterion.isQualitative()) {
+            return true;
+        }
+        // in old format qualitative flag is described in each assessment
+        return ttCriteriaEstimationsModel.getQualitative();
+    }
+
+    private static boolean isCrispQualitativeAssessment(TTScaleModel scale) {
+        // in new format qualitative flag is described in criteria
+        return scale != null && scale.getValues() != null;
     }
 
     public static List<TTCriteriaModel> getOrderedCriteriaList(Map<String, List<TTCriteriaModel>> criteria,
