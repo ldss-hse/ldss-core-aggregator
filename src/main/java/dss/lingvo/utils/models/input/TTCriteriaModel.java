@@ -4,6 +4,8 @@ public class TTCriteriaModel {
     private String criteriaID;
     private String criteriaName;
     private boolean qualitative;
+    private boolean isBenefit;
+    private String units;
 
     public String getCriteriaID() {
         return criteriaID;
@@ -27,5 +29,21 @@ public class TTCriteriaModel {
 
     public void setQualitative(boolean qualitative) {
         this.qualitative = qualitative;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public boolean isBenefit() {
+        return isBenefit;
+    }
+
+    public void setBenefit(boolean isBenefit) {
+        this.isBenefit = isBenefit;
     }
 }

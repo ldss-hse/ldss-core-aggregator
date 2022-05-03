@@ -115,11 +115,12 @@ public class TT2HFLTSCoordinator {
 
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize);
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize, model.getCriteriaWeightsPerGroup());
 
         List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator.transposeByAbstractionLevel(model.getAbstractionLevels().size(), model.getAlternatives().size(), model.getExperts().size(), allByLevel);
 
-        float[] a = new float[model.getExpertWeightsRule().values().size()];
+        int numExperts = model.getExpertWeightsRule().values().size();
+        float[] a = new float[numExperts];
         float curMax = 0f;
         for (Map.Entry<String, Float> e : model.getExpertWeightsRule().entrySet()) {
             if (e.getKey().equals("1")) {
@@ -128,7 +129,9 @@ public class TT2HFLTSCoordinator {
             }
         }
         a[0] = curMax;
-        a[1] = 1 - curMax;
+        if (numExperts > 1) {
+            a[1] = 1 - curMax;
+        }
         List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByExpert(model.getAbstractionLevels().size(), model.getAlternatives().size(), 7, allByExpert, a);
 
         List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateFinalAltEst(7, altToLevel);

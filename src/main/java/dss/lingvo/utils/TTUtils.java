@@ -1,6 +1,5 @@
 package dss.lingvo.utils;
 
-import dss.lingvo.hflts.TTHFLTS;
 import dss.lingvo.t2.TTNormalizedTranslator;
 import dss.lingvo.t2.TTTuple;
 import dss.lingvo.t2hflts.TT2HFLTS;
@@ -250,7 +249,10 @@ public class TTUtils {
 
     public static List<ArrayList<ArrayList<TT2HFLTS>>> getAllEstimationsFromMultiLevelJSONModel(TTJSONMultiLevelInputModel ttjsonModel, int targetScaleSize) {
         Map<String, List<TTExpertEstimationsModel>> estimations = ttjsonModel.getEstimations();
-        Map<String, Integer> averages = getAverageForEachNumericCriterion(estimations);
+        Map<String, Double> averages = getAverageForEachNumericCriterion(
+                estimations,
+                ttjsonModel.getCriteria(),
+                ttjsonModel.getScales());
         Map<String, List<TTCriteriaModel>> criteria = ttjsonModel.getCriteria();
         List<TTAbstractionLevelModel> levels = ttjsonModel.getAbstractionLevels();
         List<ArrayList<ArrayList<TT2HFLTS>>> expertsEstimationsList = new ArrayList<>();
@@ -274,16 +276,34 @@ public class TTUtils {
                                 .orElse(null);
 
                         TT2HFLTS res;
-                        if (critEst.getQualitative()) {
+                        TTCriteriaModel criterion = getCriterion(criteriaModel.getCriteriaID(), criteria);
+                        TTScaleModel scale = getScale(critEst.getScaleID(), ttjsonModel.getScales());
+
+                        if (isQualitativeAssessment(criterion, critEst) &&
+                                !isCrispQualitativeAssessment(scale)) {
                             // transform it to 2tuple as usual linguistic info
                             res = transformToTTHFLTS(ttjsonModel.getScales(), critEst.getScaleID(), critEst.getEstimation());
                         } else {
                             // transform numeric to tuple and then to TTHFLTS
-                            // however, first of all we need to normalize the values
-                            float numericEstimation = Integer.parseInt(critEst.getEstimation().get(0)) / ((float) averages.get(critEst.getCriteriaID()));
-                            List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
-                            float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
-                            TTTuple resTuple = TTNormalizedTranslator.getInstance().getTTupleForNumericTranslation(resTranslation, targetScaleSize);
+                            // however, first we need to normalize the values
+                            Float valueToRemember;
+                            if (isQualitativeAssessment(criterion, critEst) && isCrispQualitativeAssessment(scale)) {
+                                // transform it to number according to the specified mapping
+                                valueToRemember = findReplacingCrispLinguisticValue(
+                                        critEst.getEstimation().get(0),
+                                        scale);
+                            } else {
+                                valueToRemember = Float.parseFloat(critEst.getEstimation().get(0));
+                            }
+
+                            TTNormalizedTranslator translator = TTNormalizedTranslator.getInstance();
+
+                            float numericEstimation = valueToRemember / (averages.get(critEst.getCriteriaID()).floatValue());
+
+                            List<Float> fSet = translator.getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
+                            float resTranslation = translator.getTranslationFromFuzzySet(fSet);
+                            TTTuple resTuple = translator.getTTupleForNumericTranslation(resTranslation, targetScaleSize);
+
                             List<TTTuple> tmpL = new ArrayList<>();
                             tmpL.add(resTuple);
                             res = new TT2HFLTS(tmpL);
@@ -298,29 +318,93 @@ public class TTUtils {
         return expertsEstimationsList;
     }
 
-    private static Map<String, Integer> getAverageForEachNumericCriterion(Map<String, List<TTExpertEstimationsModel>> estimationsMap) {
-        Map<String, List<Integer>> averages = new TreeMap<>();
-        Map<String, Integer> sumFinal = new TreeMap<>();
+    private static Map<String, Double> getAverageForEachNumericCriterion(
+            Map<String, List<TTExpertEstimationsModel>> estimationsMap,
+            Map<String, List<TTCriteriaModel>> criteria,
+            List<TTScaleModel> scales
+    ) {
+        Map<String, List<Float>> averages = new TreeMap<>();
         for (Map.Entry<String, List<TTExpertEstimationsModel>> entry : estimationsMap.entrySet()) {
             for (TTExpertEstimationsModel ttExpertEstimationsModel : entry.getValue()) {
                 for (TTCriteriaEstimationsModel ttCriteriaEstimationsModel : ttExpertEstimationsModel.getCriteria2Estimation()) {
-                    if (!ttCriteriaEstimationsModel.getQualitative()) {
-                        List<Integer> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
-                        if (averList == null) {
-                            averList = new ArrayList<>();
-                        }
-                        averList.add(Integer.parseInt(ttCriteriaEstimationsModel.getEstimation().get(0)));
-                        averages.put(ttCriteriaEstimationsModel.getCriteriaID(), averList);
+                    TTCriteriaModel criterion = getCriterion(ttCriteriaEstimationsModel.getCriteriaID(), criteria);
+                    TTScaleModel scale = getScale(ttCriteriaEstimationsModel.getScaleID(), scales);
+
+                    if (isQualitativeAssessment(criterion, ttCriteriaEstimationsModel) &&
+                            !isCrispQualitativeAssessment(scale)) {
+                        // this is a 2-tuple that needs different pre-processing
+                        continue;
                     }
+
+                    List<Float> averList = averages.get(ttCriteriaEstimationsModel.getCriteriaID());
+                    if (averList == null) {
+                        averList = new ArrayList<>();
+                    }
+
+                    Float valueToRemember;
+                    if (scale != null && scale.getValues() != null) {
+                        // this is a linguistic variable that has to be replaced with a numeric value
+                        valueToRemember = findReplacingCrispLinguisticValue(
+                                ttCriteriaEstimationsModel.getEstimation().get(0),
+                                scale);
+                    } else {
+                        // this is a numeric value that should be parsed from string
+                        valueToRemember = Float.parseFloat(ttCriteriaEstimationsModel.getEstimation().get(0));
+                    }
+
+                    averList.add(valueToRemember);
+
+                    averages.put(ttCriteriaEstimationsModel.getCriteriaID(), averList);
                 }
 
             }
         }
-        for (Map.Entry<String, List<Integer>> entry : averages.entrySet()) {
-            sumFinal.put(entry.getKey(), entry.getValue().stream().mapToInt(Integer::intValue).sum());
+
+        Map<String, Double> sumFinal = new TreeMap<>();
+        for (Map.Entry<String, List<Float>> entry : averages.entrySet()) {
+            double normalized_value = Math.sqrt(entry.getValue().stream().mapToDouble(e -> Math.pow(e, 2)).sum());
+            sumFinal.put(entry.getKey(), normalized_value);
         }
         return sumFinal;
+    }
 
+    private static TTCriteriaModel getCriterion(String criterionID, Map<String, List<TTCriteriaModel>> criteria) {
+        for (Map.Entry<String, List<TTCriteriaModel>> entry : criteria.entrySet()) {
+            for (TTCriteriaModel criteriaModel : entry.getValue()) {
+                if (criteriaModel.getCriteriaID().equals(criterionID)) {
+                    return criteriaModel;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static TTScaleModel getScale(String scaleID, List<TTScaleModel> scales) {
+        for (TTScaleModel scaleModel : scales) {
+            if (scaleModel.getScaleID().equals(scaleID)) {
+                return scaleModel;
+            }
+        }
+        return null;
+    }
+
+    private static Float findReplacingCrispLinguisticValue(String label, TTScaleModel scale) {
+        return scale.getValues().get(scale.getLabels().indexOf(label));
+    }
+
+    private static boolean isQualitativeAssessment(TTCriteriaModel criterion,
+                                                   TTCriteriaEstimationsModel ttCriteriaEstimationsModel) {
+        // in new format qualitative flag is described in criteria
+        if (criterion != null && criterion.isQualitative()) {
+            return true;
+        }
+        // in old format qualitative flag is described in each assessment
+        return ttCriteriaEstimationsModel.getQualitative();
+    }
+
+    private static boolean isCrispQualitativeAssessment(TTScaleModel scale) {
+        // in new format qualitative flag is described in criteria
+        return scale != null && scale.getValues() != null;
     }
 
     public static List<TTCriteriaModel> getOrderedCriteriaList(Map<String, List<TTCriteriaModel>> criteria,

@@ -121,7 +121,7 @@
       {
         "criteriaID": "К.ЭТУА.2",
         "criteriaName": "Справедливость с точки зрения рабочих",
-        "qualitative": true
+        "qualitative": false
       }
     ],
     "aesthetics": [

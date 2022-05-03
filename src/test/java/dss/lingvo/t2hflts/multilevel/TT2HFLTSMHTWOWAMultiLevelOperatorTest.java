@@ -41,7 +41,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
                 .aggregateByAbstractionLevel(model.getCriteria(),
                         model.getAbstractionLevels(),
                         all,
-                        targetScaleSize);
+                        targetScaleSize, model.getCriteriaWeightsPerGroup());
 
         allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator
                 .transposeByAbstractionLevel(model.getAbstractionLevels().size(),
@@ -66,7 +66,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
         assertEquals(26, allByLevel.get(0).size());
         assertEquals(8, allByLevel.get(0).get(0).size());
         ArrayList<TTTuple> tmp = new ArrayList<>();
-        tmp.add(new TTTuple("p",7,0.17411518f,1));
+        tmp.add(new TTTuple("p",7,0.25560308f,1));
 
         TT2HFLTS myHFLTS1 = new TT2HFLTS(tmp);
         assertEquals(myHFLTS1, allByLevel.get(0).get(0).get(0));
@@ -79,7 +79,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
         assertEquals(26, altToLevel.size());
         assertEquals(8, altToLevel.get(0).size());
         ArrayList<TTTuple> tmp = new ArrayList<>();
-        tmp.add(new TTTuple("p",7,0.17411518f,1));
+        tmp.add(new TTTuple("p",7,0.25560308f,1));
 
         TT2HFLTS myHFLTS1 = new TT2HFLTS(tmp);
         assertEquals(myHFLTS1, allByLevel.get(0).get(0).get(0));
@@ -93,7 +93,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
         assertEquals(26, allByExpert.get(0).size());
         assertEquals(7, allByExpert.get(0).get(0).size());
         ArrayList<TTTuple> tmp = new ArrayList<>();
-        tmp.add(new TTTuple("p",7,0.17411518f,1));
+        tmp.add(new TTTuple("p",7,0.25560308f,1));
 
         TT2HFLTS myHFLTS1 = new TT2HFLTS(tmp);
         assertEquals(myHFLTS1, allByExpert.get(0).get(0).get(0));
@@ -105,7 +105,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
 
         assertEquals(26, altVec.size());
         ArrayList<TTTuple> tmp = new ArrayList<>();
-        tmp.add(new TTTuple("p",7,0.17411518f,1));
+        tmp.add(new TTTuple("p",7,0.25560308f,1));
 
         TT2HFLTS myHFLTS1 = new TT2HFLTS(tmp);
         assertEquals(myHFLTS1, allByExpert.get(0).get(0).get(0));

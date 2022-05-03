@@ -17,6 +17,8 @@ public class TTCommonInputModel {
     private Map<String, Float> abstractionLevelWeights;
     @JsonProperty("expertWeightsRule")
     private Map<String, Float> expertWeightsRule;
+    @JsonProperty("criteriaWeightsPerGroup")
+    private Map<String, List<Float> > criteriaWeightsPerGroup;
 
     public List<TTAlternativeModel> getAlternatives() {
         return alternatives;
@@ -72,5 +74,13 @@ public class TTCommonInputModel {
 
     public void setExpertWeightsRule(Map<String, Float> expertWeightsRule) {
         this.expertWeightsRule = expertWeightsRule;
+    }
+
+    public Map<String, List<Float>> getCriteriaWeightsPerGroup() {
+        return criteriaWeightsPerGroup;
+    }
+
+    public void setCriteriaWeightsPerGroup(Map<String, List<Float>>criteriaWeightsPerGroup) {
+        this.criteriaWeightsPerGroup = criteriaWeightsPerGroup;
     }
 }
