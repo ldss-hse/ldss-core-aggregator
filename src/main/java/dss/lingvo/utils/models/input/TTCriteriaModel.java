@@ -4,7 +4,7 @@ public class TTCriteriaModel {
     private String criteriaID;
     private String criteriaName;
     private boolean qualitative;
-    private boolean isBenefit;
+    private boolean isBenefit = true;
     private String units;
 
     public String getCriteriaID() {
