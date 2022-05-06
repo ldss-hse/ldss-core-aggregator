@@ -67,8 +67,6 @@ public class TT2HFLTSCoordinator {
 
     private void processNumericSample() {
         // now how to work with numbers
-        int targetScaleSize = 7;
-
         final float numeric_assessment = 0.78f;
         List<Float> fSet = TTNormalizedTranslator.getInstance().getFuzzySetForNumericEstimation(numeric_assessment, 5);
         float resTranslation = TTNormalizedTranslator.getInstance().getTranslationFromFuzzySet(fSet);
@@ -76,7 +74,7 @@ public class TT2HFLTSCoordinator {
         System.out.printf("Translating %f to 2-tuple: %s\n", numeric_assessment, resTuple.toString());
     }
 
-    private void processweightsGenerationSample() {
+    private void processWeightsGenerationSample() {
         float[] expDistr = {0.8f, 0.2f};
         float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
         System.out.println(Arrays.toString(resVector));
@@ -111,13 +109,22 @@ public class TT2HFLTSCoordinator {
         int targetScaleSize = 7;
 
         TTJSONMultiLevelInputModel model = ttjsonReader.readJSONMultiLevelDescription(inputFile, false);
-        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model, 7);
+
+        TTNormalizedTranslator.registerScalesBatch(model.getScales());
+
+        List<ArrayList<ArrayList<TT2HFLTS>>> all = TTUtils.getAllEstimationsFromMultiLevelJSONModel(model,
+                targetScaleSize);
 
         // Step 1. Aggregate by abstraction level
         TT2HFLTSMHTWOWAMultiLevelOperator tt2HFLTSMHTWOWAMultiLevelOperator = new TT2HFLTSMHTWOWAMultiLevelOperator();
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize, model.getCriteriaWeightsPerGroup());
 
-        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert = tt2HFLTSMHTWOWAMultiLevelOperator.transposeByAbstractionLevel(model.getAbstractionLevels().size(), model.getAlternatives().size(), model.getExperts().size(), allByLevel);
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByAbstractionLevel(
+                model.getCriteria(), model.getAbstractionLevels(), all, targetScaleSize,
+                model.getCriteriaWeightsPerGroup());
+
+        List<ArrayList<ArrayList<TT2HFLTS>>> allByExpert =
+                tt2HFLTSMHTWOWAMultiLevelOperator.transposeByAbstractionLevel(model.getAbstractionLevels().size(),
+                        model.getAlternatives().size(), model.getExperts().size(), allByLevel);
 
         int numExperts = model.getExpertWeightsRule().values().size();
         float[] a = new float[numExperts];
@@ -132,14 +139,15 @@ public class TT2HFLTSCoordinator {
         if (numExperts > 1) {
             a[1] = 1 - curMax;
         }
-        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByExpert(model.getAbstractionLevels().size(), model.getAlternatives().size(), 7, allByExpert, a);
+        List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByExpert(
+                model.getAbstractionLevels().size(), model.getAlternatives().size(), targetScaleSize, allByExpert, a);
 
-        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateFinalAltEst(7, altToLevel);
+        List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateFinalAltEst(targetScaleSize, altToLevel);
 
         // all below is just processing
 
         // saving to file
-        TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altVec, model, 7);
+        TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altVec, model, targetScaleSize);
         Path outputJSONFilePath = Paths.get(outputDirectory.toString(), "result.json");
         TTJSONUtils.getInstance().writeResultToJSON(outputJSONFilePath, res);
 
@@ -157,14 +165,8 @@ public class TT2HFLTSCoordinator {
     }
 
     public void go(File inputFile, File outputDirectory) throws IOException {
-        processSimpleCase(outputDirectory);
-
-        processNumericSample();
-
-        processweightsGenerationSample();
-
-        processMHTWASample();
-
+//        processSimpleCase(outputDirectory);
+//        processNumericSample();
         processMultiLevelAdvancedSample(inputFile, outputDirectory);
     }
 }

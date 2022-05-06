@@ -300,6 +300,14 @@ public class TTUtils {
 
                             float numericEstimation = valueToRemember / (averages.get(critEst.getCriteriaID()).floatValue());
 
+                            if (!criterion.isBenefit()) {
+                                assert numericEstimation >= 0. && numericEstimation <= 1: "should be already a normalized value";
+
+                                // hereinafter all criteria are considered as benefit, therefore need to
+                                // reverse cost criteria by subtracting them from one
+                                numericEstimation = 1 - numericEstimation;
+                            }
+
                             List<Float> fSet = translator.getFuzzySetForNumericEstimation(numericEstimation, targetScaleSize);
                             float resTranslation = translator.getTranslationFromFuzzySet(fSet);
                             TTTuple resTuple = translator.getTTupleForNumericTranslation(resTranslation, targetScaleSize);
