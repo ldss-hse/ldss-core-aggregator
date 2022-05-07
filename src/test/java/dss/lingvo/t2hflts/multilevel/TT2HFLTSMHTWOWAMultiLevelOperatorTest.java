@@ -49,7 +49,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperatorTest {
                         model.getExperts().size(),
                         allByLevel);
 
-        float []a = {0.8f, 0.2f};
+        float[] a = TTUtils.calculateWeights(model);
         altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator
                 .aggregateByExpert(model.getAbstractionLevels().size(),
                         model.getAlternatives().size(),

@@ -229,7 +229,7 @@ public class TTUtils {
             }
         }
 
-        int numExperts = model.getExpertWeightsRule().values().size();
+        int numExperts = model.getExperts().size();
         float[] distribution = new float[numExperts];
         distribution[0] = curMax;
         if (numExperts > 1) {
