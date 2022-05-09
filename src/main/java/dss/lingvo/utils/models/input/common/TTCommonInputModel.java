@@ -15,6 +15,8 @@ public class TTCommonInputModel {
     private Map<String, List<TTExpertEstimationsModel>> estimations;
     @JsonProperty("abstractionLevelWeights")
     private Map<String, Float> abstractionLevelWeights;
+    @JsonProperty("expertWeights")
+    private Map<String, Float> expertWeights;
     @JsonProperty("expertWeightsRule")
     private Map<String, Float> expertWeightsRule;
     @JsonProperty("criteriaWeightsPerGroup")
@@ -74,6 +76,14 @@ public class TTCommonInputModel {
 
     public void setExpertWeightsRule(Map<String, Float> expertWeightsRule) {
         this.expertWeightsRule = expertWeightsRule;
+    }
+
+    public Map<String, Float> getExpertWeights() {
+        return expertWeights;
+    }
+
+    public void setExpertWeights(Map<String, Float> expertWeights) {
+        this.expertWeights = expertWeights;
     }
 
     public Map<String, List<Float>> getCriteriaWeightsPerGroup() {

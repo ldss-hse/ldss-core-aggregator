@@ -207,6 +207,37 @@ public class TTUtils {
         return ttjsonOutputModel;
     }
 
+
+    public static float[] calculateWeights(TTCommonInputModel model) {
+        float[] weights = new float[model.getExperts().size()];
+        if (model.getExpertWeights() != null) {
+            // if particular weights are defined in the task description there is no need to
+            // automatically assign weights
+            int index = 0;
+            for (TTExpertModel expert: model.getExperts()) {
+                weights[index++] = model.getExpertWeights().get(expert.getExpertID());
+            }
+
+            return weights;
+        }
+
+        float curMax = 0f;
+        for (Map.Entry<String, Float> e : model.getExpertWeightsRule().entrySet()) {
+            if (e.getKey().equals("1")) {
+                curMax = e.getValue();
+                break;
+            }
+        }
+
+        int numExperts = model.getExperts().size();
+        float[] distribution = new float[numExperts];
+        distribution[0] = curMax;
+        if (numExperts > 1) {
+            distribution[1] = 1 - curMax;
+        }
+        return calculateWeightsVectorFromDistribution(distribution, numExperts);
+    }
+
     /**
      * When calculating weights for the experts, we introduce a new formula
      * E.g. distribution is [0.8, 0.2] and we have 3 experts.
@@ -218,7 +249,7 @@ public class TTUtils {
      * @param numExperts   - number of experts
      * @return vector of weights
      */
-    public static float[] calculateWeightsVector(float[] distribution, int numExperts) {
+    public static float[] calculateWeightsVectorFromDistribution(float[] distribution, int numExperts) {
         float[] res = new float[numExperts];
         for (int i = 0; i < numExperts; i++) {
             res[i] = calculateWeight(distribution[0], i, numExperts);

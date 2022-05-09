@@ -215,7 +215,7 @@ public class TTUtilsTest {
     @Test
     public void testWeightsDistribution() throws Exception {
         float[] expDistr = {0.8f, 0.2f};
-        float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
+        float[] resVector = TTUtils.calculateWeightsVectorFromDistribution(expDistr, 4);
         float[] expV = {0.8f, 0.16f, 0.03199997f, 0.008000016f};
         float sum = 0f;
         for (int i = 0; i < resVector.length; i++) {

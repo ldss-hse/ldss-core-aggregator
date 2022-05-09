@@ -76,7 +76,7 @@ public class TT2HFLTSCoordinator {
 
     private void processWeightsGenerationSample() {
         float[] expDistr = {0.8f, 0.2f};
-        float[] resVector = TTUtils.calculateWeightsVector(expDistr, 4);
+        float[] resVector = TTUtils.calculateWeightsVectorFromDistribution(expDistr, 4);
         System.out.println(Arrays.toString(resVector));
 
         float sum = 0f;
@@ -126,21 +126,11 @@ public class TT2HFLTSCoordinator {
                 tt2HFLTSMHTWOWAMultiLevelOperator.transposeByAbstractionLevel(model.getAbstractionLevels().size(),
                         model.getAlternatives().size(), model.getExperts().size(), allByLevel);
 
-        int numExperts = model.getExpertWeightsRule().values().size();
-        float[] a = new float[numExperts];
-        float curMax = 0f;
-        for (Map.Entry<String, Float> e : model.getExpertWeightsRule().entrySet()) {
-            if (e.getKey().equals("1")) {
-                curMax = e.getValue();
-                break;
-            }
-        }
-        a[0] = curMax;
-        if (numExperts > 1) {
-            a[1] = 1 - curMax;
-        }
+        float[] weights = TTUtils.calculateWeights(model);
+        System.out.println("\n\n\n[MULTILEVEL] Weights: " + Arrays.toString(weights));
         List<ArrayList<TT2HFLTS>> altToLevel = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateByExpert(
-                model.getAbstractionLevels().size(), model.getAlternatives().size(), targetScaleSize, allByExpert, a);
+                model.getAbstractionLevels().size(), model.getAlternatives().size(), targetScaleSize, allByExpert,
+                weights);
 
         List<TT2HFLTS> altVec = tt2HFLTSMHTWOWAMultiLevelOperator.aggregateFinalAltEst(targetScaleSize, altToLevel);
 
@@ -150,7 +140,6 @@ public class TT2HFLTSCoordinator {
         TTJSONOutputModel res = TTUtils.prepareAllResultsForJSON(altVec, model, targetScaleSize);
         Path outputJSONFilePath = Paths.get(outputDirectory.toString(), "result.json");
         TTJSONUtils.getInstance().writeResultToJSON(outputJSONFilePath, res);
-
 
         // printing to console
         List<Pair<String, TT2HFLTS>> resZippedVec = IntStream.range(0, altVec.size()).mapToObj(i -> new Pair<>(model.getAlternatives().get(i).getAlternativeID(), altVec.get(i))).collect(Collectors.toList());

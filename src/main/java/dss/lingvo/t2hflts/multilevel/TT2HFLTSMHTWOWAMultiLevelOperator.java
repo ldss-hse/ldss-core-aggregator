@@ -68,7 +68,7 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
                                                        int altSize,
                                                        int targetScaleSize,
                                                        List<ArrayList<ArrayList<TT2HFLTS>>> all,
-                                                       float[] distribution) {
+                                                       float[] weights) {
         TT2HFLTSMHTWAOperator tt2HFLTSMHTWAOperator = new TT2HFLTSMHTWAOperator();
         List<ArrayList<TT2HFLTS>> levelEstimates = new ArrayList<>();
 
@@ -82,7 +82,6 @@ public class TT2HFLTSMHTWOWAMultiLevelOperator {
         // fill matrix
         for (int levelIndex = 0; levelIndex < levelsSize; levelIndex++) {
             for (int altIndex = 0; altIndex < altSize; altIndex++) {
-                float[] weights = TTUtils.calculateWeightsVector(distribution, all.get(levelIndex).get(altIndex).size());
                 List<TT2HFLTS> newSet = TTUtils.sortTT2HFLTS(all.get(levelIndex).get(altIndex), true);
                 TT2HFLTS aggRes = tt2HFLTSMHTWAOperator.calculate(newSet, weights, targetScaleSize);
                 levelEstimates.get(altIndex).set(levelIndex, aggRes);
