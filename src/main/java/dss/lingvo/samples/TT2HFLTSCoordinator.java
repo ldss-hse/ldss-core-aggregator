@@ -149,7 +149,7 @@ public class TT2HFLTSCoordinator {
         System.out.println("\n\n\n[MULTILEVEL] [REPORT] Aggregation results");
         for (Pair<String, TT2HFLTS> stringTT2HFLTSPair : resZippedVec) {
             TTAlternativeModel altInstance = model.getAlternatives().stream().filter((TTAlternativeModel ttAlternativeModel) -> ttAlternativeModel.getAlternativeID().equals(stringTT2HFLTSPair.getKey())).findFirst().orElse(null);
-            System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName());
+            System.out.println(stringTT2HFLTSPair.getKey() + ' ' + altInstance.getAlternativeName() + ' ' + stringTT2HFLTSPair.getValue().toString());
         }
     }
 

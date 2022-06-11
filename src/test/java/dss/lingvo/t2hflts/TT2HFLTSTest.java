@@ -73,7 +73,10 @@ public class TT2HFLTSTest {
 
     @Test
     public void testToString() throws Exception {
-        assertEquals("<2Tuple> { label: 2; translation: 0.0; }<2Tuple> { label: 3; translation: 0.0; }<2Tuple> { label: 4; translation: 0.0; }", myHFLTS1.toString());
+        assertEquals("" +
+                "<2Tuple> { label: 2; index: 2; translation: 0.0; }" +
+                "<2Tuple> { label: 3; index: 3; translation: 0.0; }" +
+                "<2Tuple> { label: 4; index: 4; translation: 0.0; }", myHFLTS1.toString());
     }
 
     @Test

@@ -25,7 +25,8 @@ public class TTTuple {
 
     @Override
     public String toString(){
-        return "<2Tuple> { label: " + this.myLabel + "; translation: " + this.myTranslation +"; }";
+        return "<2Tuple> { label: " + this.myLabel + "; index: " + this.index
+                + "; translation: " + this.myTranslation +"; }";
     }
 
     public int getIndex() {

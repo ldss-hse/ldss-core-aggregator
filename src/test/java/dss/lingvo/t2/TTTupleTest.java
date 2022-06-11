@@ -59,7 +59,7 @@ public class TTTupleTest {
 
         String res = tmp.toString();
 
-        assertEquals("<2Tuple> { label: 5; translation: -0.5; }", res);
+        assertEquals("<2Tuple> { label: 5; index: 5; translation: -0.5; }", res);
     }
 
     @Test
